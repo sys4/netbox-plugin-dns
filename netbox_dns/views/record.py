@@ -1,5 +1,6 @@
 from dns import name as dns_name
 
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from netbox.views import generic
@@ -12,7 +13,7 @@ from netbox_dns.forms import (
     RecordForm,
     RecordBulkEditForm,
 )
-from netbox_dns.models import Record, Zone
+from netbox_dns.models import Record
 from netbox_dns.choices import RecordTypeChoices
 from netbox_dns.tables import RecordTable, ManagedRecordTable, RelatedRecordTable
 from netbox_dns.utilities import (
@@ -166,25 +167,12 @@ class RecordView(generic.ObjectView):
                 context["ipam_ip_address"] = address_record.ipam_ip_address
 
         if not instance.managed:
-            name = dns_name.from_text(instance.name, origin=None)
-
-            if not instance.is_delegation_record:
-                fqdn = dns_name.from_text(instance.fqdn)
-
-                if Zone.objects.filter(
-                    active=True,
-                    view=instance.zone.view,
-                    name__iregex=regex_from_list(
-                        get_parent_zone_names(
-                            instance.fqdn,
-                            min_labels=len(fqdn) - len(name),
-                            include_self=True,
-                        )
-                    ),
-                ).exists():
-                    context["mask_warning"] = _(
-                        "Record is masked by a child zone and may not be visible in DNS"
-                    )
+            try:
+                instance.check_zone_cut_conflict()
+            except ValidationError:
+                context["mask_warning"] = _(
+                    "Record is masked by a child zone and may not be visible in DNS"
+                )
 
         return context
 
