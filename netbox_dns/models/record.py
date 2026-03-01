@@ -350,6 +350,40 @@ class Record(ObjectModificationMixin, ContactsMixin, PrimaryModel):
     def is_delegation_record(self):
         return self in self.zone.delegation_records
 
+    def check_zone_cut_conflict(self):
+        record_name = dns_name.from_text(self.fqdn)
+
+        for zone in self.zone.descendant_zones:
+            zone_name = dns_name.from_text(zone.fqdn)
+
+            if not record_name.is_subdomain(zone_name):
+                continue
+
+            if (
+                self.type
+                in (
+                    RecordTypeChoices.NS,
+                    RecordTypeChoices.DS,
+                )
+                and record_name == zone_name
+            ):
+                continue
+
+            if self.type in (
+                RecordTypeChoices.A,
+                RecordTypeChoices.AAAA,
+            ) and record_name in (
+                dns_name.from_text(nameserver.name)
+                for nameserver in zone.nameservers.all()
+            ):
+                continue
+
+            raise ValidationError(
+                _("{fqdn} is masked by child zone {zone}").format(
+                    fqdn=self.fqdn.rstrip("."), zone=zone.name
+                )
+            )
+
     def refresh_ptr_record(
         self, ptr_record=None, update_rfc2317_cname=True, save_zone_serial=True
     ):
@@ -678,6 +712,12 @@ class Record(ObjectModificationMixin, ContactsMixin, PrimaryModel):
                         "name": exc,
                     }
                 )
+
+        if get_plugin_config("netbox_dns", "enforce_zone_cut_checking"):
+            try:
+                self.check_zone_cut_conflict()
+            except ValidationError as exc:
+                raise ValidationError({"name": exc})
 
     validate_name.alters_data = True
 

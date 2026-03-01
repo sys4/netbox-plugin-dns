@@ -93,6 +93,7 @@ class DNSConfig(PluginConfig):
         "enable_root_zones": False,
         "enforce_unique_records": True,
         "enforce_unique_rrset_ttl": True,
+        "enforce_zone_cut_checking": True,
         "menu_name": "DNS",
         "top_level_menu": True,
         "convert_names_to_lowercase": False,

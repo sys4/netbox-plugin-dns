@@ -24,6 +24,7 @@ class RecordNameValidationTestCase(TestCase):
             Zone(name="zone240" + 22 * ".123456789" + ".example.com", **zone_data),
             Zone(name="zone240" + 22 * ".987654321" + ".example.com.", **zone_data),
             Zone(name="f.e.e.b.d.a.e.d.0.8.e.f.ip6.arpa", **zone_data),
+            Zone(name="example.com", **zone_data),
         )
         for zone in cls.zones:
             zone.save()
@@ -262,3 +263,184 @@ class RecordNameValidationTestCase(TestCase):
     def test_name_validation_allow_special_character_failure(self):
         with self.assertRaises(ValidationError):
             Record.objects.create(name="na/me1", zone=self.zones[0], **self.record_data)
+
+    def test_zone_cut_conflict_failure(self):
+        zone = self.zones[5]
+
+        with self.assertRaises(ValidationError):
+            Record.objects.create(
+                name="zone1",
+                zone=zone,
+                type=RecordTypeChoices.TXT,
+                value="test",
+            )
+        with self.assertRaises(ValidationError):
+            Record.objects.create(
+                name="zone1",
+                zone=zone,
+                type=RecordTypeChoices.A,
+                value="192.0.2.1",
+            )
+        with self.assertRaises(ValidationError):
+            Record.objects.create(
+                name="zone1",
+                zone=zone,
+                type=RecordTypeChoices.AAAA,
+                value="2001:db8::1",
+            )
+        with self.assertRaises(ValidationError):
+            Record.objects.create(
+                name="name1.zone1",
+                zone=zone,
+                type=RecordTypeChoices.NS,
+                value="ns1.zone1.example.com",
+            )
+        with self.assertRaises(ValidationError):
+            Record.objects.create(
+                name="name2.zone1",
+                zone=zone,
+                type=RecordTypeChoices.DS,
+                value="55286 8 2 87E39BB0ACB924446AB5E2C7C4BF853FBF05FDA42DB74262D04C439E 8A724E7E",
+            )
+        with self.assertRaises(ValidationError):
+            Record.objects.create(
+                name="name1.zone1",
+                zone=zone,
+                type=RecordTypeChoices.TXT,
+                value="test",
+            )
+        with self.assertRaises(ValidationError):
+            Record.objects.create(
+                name="name1.zone1",
+                zone=zone,
+                type=RecordTypeChoices.A,
+                value="192.0.2.1",
+            )
+        with self.assertRaises(ValidationError):
+            Record.objects.create(
+                name="name1.zone1",
+                zone=zone,
+                type=RecordTypeChoices.AAAA,
+                value="2001:db8::1",
+            )
+        with self.assertRaises(ValidationError):
+            Record.objects.create(
+                name="ns1.zone1",
+                zone=zone,
+                type=RecordTypeChoices.A,
+                value="192.0.2.1",
+            )
+        with self.assertRaises(ValidationError):
+            Record.objects.create(
+                name="ns2.zone1",
+                zone=zone,
+                type=RecordTypeChoices.AAAA,
+                value="2001:db8::1",
+            )
+
+    def test_zone_cut_delegation_ok(self):
+        zone = self.zones[5]
+        child_zone = self.zones[0]
+
+        child_zone.nameservers.set(
+            (
+                NameServer.objects.create(name="ns1.zone1.example.com"),
+                NameServer.objects.create(name="ns2.zone1.example.com"),
+            )
+        )
+
+        Record.objects.create(
+            name="zone1",
+            zone=zone,
+            type=RecordTypeChoices.NS,
+            value="ns1.zone1.example.com",
+        )
+        Record.objects.create(
+            name="zone1",
+            zone=zone,
+            type=RecordTypeChoices.DS,
+            value="55286 8 2 87E39BB0ACB924446AB5E2C7C4BF853FBF05FDA42DB74262D04C439E 8A724E7E",
+        )
+        Record.objects.create(
+            name="ns1.zone1",
+            zone=zone,
+            type=RecordTypeChoices.A,
+            value="192.0.2.1",
+        )
+        Record.objects.create(
+            name="ns2.zone1",
+            zone=zone,
+            type=RecordTypeChoices.AAAA,
+            value="2001:db8::1",
+        )
+
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                "enforce_zone_cut_checking": False,
+            }
+        }
+    )
+    def test_zone_cut_conflict_nocheck_ok(self):
+        zone = self.zones[5]
+
+        Record.objects.create(
+            name="zone1",
+            zone=zone,
+            type=RecordTypeChoices.TXT,
+            value="test",
+        )
+        Record.objects.create(
+            name="zone1",
+            zone=zone,
+            type=RecordTypeChoices.A,
+            value="192.0.2.1",
+        )
+        Record.objects.create(
+            name="zone1",
+            zone=zone,
+            type=RecordTypeChoices.AAAA,
+            value="2001:db8::1",
+        )
+        Record.objects.create(
+            name="name1.zone1",
+            zone=zone,
+            type=RecordTypeChoices.NS,
+            value="ns1.zone1.example.com",
+        )
+        Record.objects.create(
+            name="name2.zone1",
+            zone=zone,
+            type=RecordTypeChoices.DS,
+            value="55286 8 2 87E39BB0ACB924446AB5E2C7C4BF853FBF05FDA42DB74262D04C439E 8A724E7E",
+        )
+        Record.objects.create(
+            name="name1.zone1",
+            zone=zone,
+            type=RecordTypeChoices.TXT,
+            value="test",
+        )
+        Record.objects.create(
+            name="name1.zone1",
+            zone=zone,
+            type=RecordTypeChoices.A,
+            value="192.0.2.1",
+        )
+        Record.objects.create(
+            name="name1.zone1",
+            zone=zone,
+            type=RecordTypeChoices.AAAA,
+            value="2001:db8::1",
+        )
+        Record.objects.create(
+            name="ns1.zone1",
+            zone=zone,
+            type=RecordTypeChoices.A,
+            value="192.0.2.1",
+        )
+        Record.objects.create(
+            name="ns2.zone1",
+            zone=zone,
+            type=RecordTypeChoices.AAAA,
+            value="2001:db8::1",
+        )
