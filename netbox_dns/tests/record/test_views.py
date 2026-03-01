@@ -1,3 +1,4 @@
+from django.test import override_settings
 from django.urls import reverse
 from rest_framework import status
 
@@ -252,6 +253,13 @@ class RecordViewTestCase(
             "There is no matching target record for CNAME value",
         )
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                "enforce_zone_cut_checking": False,
+            }
+        }
+    )
     def test_warning_mask_record(self):
         self.add_permissions("netbox_dns.view_record")
 
@@ -336,6 +344,11 @@ class RecordViewTestCase(
         self.add_permissions("netbox_dns.view_record")
 
         zone = Zone.objects.create(name="example.com", **self.zone_data)
+
+        self.zones[0].nameservers.set(
+            (NameServer.objects.create(name="ns1.zone1.example.com"),)
+        )
+
         Record.objects.create(
             name="zone1",
             zone=zone,
@@ -358,6 +371,13 @@ class RecordViewTestCase(
             "Record is masked by a child zone and may not be visible in DNS",
         )
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                "enforce_zone_cut_checking": False,
+            }
+        }
+    )
     def test_warning_mask_record_nonglue_a_warn(self):
         self.add_permissions("netbox_dns.view_record")
 
@@ -380,6 +400,10 @@ class RecordViewTestCase(
 
     def test_warning_mask_record_glue_aaaa_ok(self):
         self.add_permissions("netbox_dns.view_record")
+
+        self.zones[0].nameservers.set(
+            (NameServer.objects.create(name="ns1.zone1.example.com"),)
+        )
 
         zone = Zone.objects.create(name="example.com", **self.zone_data)
         Record.objects.create(
@@ -404,6 +428,13 @@ class RecordViewTestCase(
             "Record is masked by a child zone and may not be visible in DNS",
         )
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                "enforce_zone_cut_checking": False,
+            }
+        }
+    )
     def test_warning_mask_record_nonglue_aaaa_warn(self):
         self.add_permissions("netbox_dns.view_record")
 

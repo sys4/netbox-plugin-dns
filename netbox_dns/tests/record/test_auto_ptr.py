@@ -1,7 +1,6 @@
 import ipaddress
 
-from django.test import TestCase
-
+from django.test import TestCase, override_settings
 
 from netbox_dns.models import NameServer, Record, Zone
 from netbox_dns.choices import RecordTypeChoices, RecordStatusChoices
@@ -1045,6 +1044,13 @@ class RecordAutoPTRTestCase(TestCase):
 
         self.assertEqual(r_record.value, f"{name}.{f_zone.name}.")
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                "enforce_zone_cut_checking": False,
+            }
+        }
+    )
     def test_ipv4_multiple_address_records_one_ptr(self):
         f_zone1 = self.zones[0]
         f_zone2 = self.zones[11]
@@ -1079,6 +1085,13 @@ class RecordAutoPTRTestCase(TestCase):
         self.assertIn(f_record1, r_record.address_records.all())
         self.assertIn(f_record2, r_record.address_records.all())
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                "enforce_zone_cut_checking": False,
+            }
+        }
+    )
     def test_ipv4_remove_address_record_from_ptr(self):
         f_zone1 = self.zones[0]
         f_zone2 = self.zones[11]
@@ -1116,6 +1129,13 @@ class RecordAutoPTRTestCase(TestCase):
         self.assertEqual(r_record.address_records.count(), 1)
         self.assertIn(f_record1, r_record.address_records.all())
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                "enforce_zone_cut_checking": False,
+            }
+        }
+    )
     def test_ipv4_add_address_record_to_ptr(self):
         f_zone1 = self.zones[0]
         f_zone2 = self.zones[11]
@@ -1151,6 +1171,13 @@ class RecordAutoPTRTestCase(TestCase):
         self.assertIn(f_record1, r_record.address_records.all())
         self.assertIn(f_record2, r_record.address_records.all())
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                "enforce_zone_cut_checking": False,
+            }
+        }
+    )
     def test_ipv4_remove_last_address_record_from_ptr(self):
         f_zone1 = self.zones[0]
         f_zone2 = self.zones[11]
@@ -1197,6 +1224,13 @@ class RecordAutoPTRTestCase(TestCase):
                 name=reverse_name(address, r_zone),
             )
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                "enforce_zone_cut_checking": False,
+            }
+        }
+    )
     def test_ipv4_use_existing_ptr(self):
         f_zone1 = self.zones[0]
         f_zone2 = self.zones[11]
@@ -1255,6 +1289,13 @@ class RecordAutoPTRTestCase(TestCase):
         self.assertIn(f_record2, r_record2.address_records.all())
         self.assertIn(f_record3, r_record2.address_records.all())
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                "enforce_zone_cut_checking": False,
+            }
+        }
+    )
     def test_ipv6_multiple_address_records_one_ptr(self):
         f_zone1 = self.zones[0]
         f_zone2 = self.zones[11]
@@ -1289,6 +1330,13 @@ class RecordAutoPTRTestCase(TestCase):
         self.assertIn(f_record1, r_record.address_records.all())
         self.assertIn(f_record2, r_record.address_records.all())
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                "enforce_zone_cut_checking": False,
+            }
+        }
+    )
     def test_ipv6_remove_address_record_from_ptr(self):
         f_zone1 = self.zones[0]
         f_zone2 = self.zones[11]
@@ -1326,6 +1374,13 @@ class RecordAutoPTRTestCase(TestCase):
         self.assertEqual(r_record.address_records.count(), 1)
         self.assertIn(f_record1, r_record.address_records.all())
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                "enforce_zone_cut_checking": False,
+            }
+        }
+    )
     def test_ipv6_add_address_record_to_ptr(self):
         f_zone1 = self.zones[0]
         f_zone2 = self.zones[11]
@@ -1361,6 +1416,13 @@ class RecordAutoPTRTestCase(TestCase):
         self.assertIn(f_record1, r_record.address_records.all())
         self.assertIn(f_record2, r_record.address_records.all())
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                "enforce_zone_cut_checking": False,
+            }
+        }
+    )
     def test_ipv6_remove_last_address_record_from_ptr(self):
         f_zone1 = self.zones[0]
         f_zone2 = self.zones[11]
@@ -1407,6 +1469,13 @@ class RecordAutoPTRTestCase(TestCase):
                 name=reverse_name(address, r_zone),
             )
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                "enforce_zone_cut_checking": False,
+            }
+        }
+    )
     def test_ipv6_use_existing_ptr(self):
         f_zone1 = self.zones[0]
         f_zone2 = self.zones[11]
