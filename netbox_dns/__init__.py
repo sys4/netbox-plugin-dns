@@ -18,8 +18,8 @@ class DNSConfig(PluginConfig):
     description = _("NetBox plugin for DNS data")
     min_version = "4.5.0"
     version = __version__
-    author = "Peter Eckel"
-    author_email = "pete@netbox-dns.org"
+    author = "Peter Eckel, sys4 AG"
+    author_email = "pe@sys4.de"
     required_settings = []
     default_settings = {
         "zone_default_ttl": 86400,
