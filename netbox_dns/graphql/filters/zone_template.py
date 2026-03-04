@@ -3,7 +3,7 @@ from typing import Annotated, TYPE_CHECKING
 import strawberry
 import strawberry_django
 from strawberry.scalars import ID
-from strawberry_django import FilterLookup
+from strawberry_django import StrFilterLookup
 
 from netbox.graphql.filters import PrimaryModelFilter
 from tenancy.graphql.filter_mixins import ContactFilterMixin, TenancyFilterMixin
@@ -26,7 +26,7 @@ class NetBoxDNSZoneTemplateFilter(
     TenancyFilterMixin,
     PrimaryModelFilter,
 ):
-    name: FilterLookup[str] | None = strawberry_django.filter_field()
+    name: StrFilterLookup[str] | None = strawberry_django.filter_field()
     nameservers: (
         Annotated[
             "NetBoxDNSNameServerFilter", strawberry.lazy("netbox_dns.graphql.filters")
@@ -47,7 +47,7 @@ class NetBoxDNSZoneTemplateFilter(
         | None
     ) = strawberry_django.filter_field()
     soa_mname_id: ID | None = strawberry_django.filter_field()
-    soa_rname: FilterLookup[str] | None = strawberry_django.filter_field()
+    soa_rname: StrFilterLookup[str] | None = strawberry_django.filter_field()
 
     registrar: (
         Annotated[
