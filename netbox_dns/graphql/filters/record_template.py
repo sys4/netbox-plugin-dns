@@ -2,7 +2,7 @@ from typing import Annotated, TYPE_CHECKING
 
 import strawberry
 import strawberry_django
-from strawberry_django import FilterLookup
+from strawberry_django import FilterLookup, StrFilterLookup
 
 from netbox.graphql.filters import PrimaryModelFilter
 from tenancy.graphql.filter_mixins import ContactFilterMixin, TenancyFilterMixin
@@ -25,8 +25,8 @@ class NetBoxDNSRecordTemplateFilter(
     TenancyFilterMixin,
     PrimaryModelFilter,
 ):
-    name: FilterLookup[str] | None = strawberry_django.filter_field()
-    record_name: FilterLookup[str] | None = strawberry_django.filter_field()
+    name: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    record_name: StrFilterLookup[str] | None = strawberry_django.filter_field()
     type: (
         Annotated[
             "NetBoxDNSRecordTypeEnum", strawberry.lazy("netbox_dns.graphql.enums")
@@ -43,7 +43,7 @@ class NetBoxDNSRecordTemplateFilter(
         Annotated["IntegerLookup", strawberry.lazy("netbox.graphql.filter_lookups")]
         | None
     ) = strawberry_django.filter_field()
-    value: FilterLookup[str] | None = strawberry_django.filter_field()
+    value: StrFilterLookup[str] | None = strawberry_django.filter_field()
     disable_ptr: FilterLookup[bool] | None = strawberry_django.filter_field()
 
     zone_templates: (

@@ -3,7 +3,7 @@ from typing import Annotated, TYPE_CHECKING
 import strawberry
 import strawberry_django
 from strawberry.scalars import ID
-from strawberry_django import FilterLookup
+from strawberry_django import FilterLookup, StrFilterLookup
 
 from netbox.graphql.filters import PrimaryModelFilter
 from tenancy.graphql.filter_mixins import ContactFilterMixin, TenancyFilterMixin
@@ -29,8 +29,8 @@ class NetBoxDNSRecordFilter(
     TenancyFilterMixin,
     PrimaryModelFilter,
 ):
-    name: FilterLookup[str] | None = strawberry_django.filter_field()
-    fqdn: FilterLookup[str] | None = strawberry_django.filter_field()
+    name: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    fqdn: StrFilterLookup[str] | None = strawberry_django.filter_field()
     view: (
         Annotated["NetBoxDNSViewFilter", strawberry.lazy("netbox_dns.graphql.filters")]
         | None
@@ -51,7 +51,7 @@ class NetBoxDNSRecordFilter(
         Annotated["IntegerLookup", strawberry.lazy("netbox.graphql.filter_lookups")]
         | None
     ) = strawberry_django.filter_field()
-    value: FilterLookup[str] | None = strawberry_django.filter_field()
+    value: StrFilterLookup[str] | None = strawberry_django.filter_field()
     disable_ptr: FilterLookup[bool] | None = strawberry_django.filter_field()
     status: (
         Annotated[
@@ -85,5 +85,5 @@ class NetBoxDNSRecordFilter(
     ) = strawberry_django.filter_field()
     ipam_ip_address_id: ID | None = strawberry_django.filter_field()
 
-    ip_address: FilterLookup[str] | None = strawberry_django.filter_field()
+    ip_address: StrFilterLookup[str] | None = strawberry_django.filter_field()
     active: FilterLookup[bool] | None = strawberry_django.filter_field()

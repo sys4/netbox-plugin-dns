@@ -1,5 +1,5 @@
 import strawberry_django
-from strawberry_django import FilterLookup
+from strawberry_django import StrFilterLookup
 
 from netbox.graphql.filters import PrimaryModelFilter
 
@@ -10,16 +10,16 @@ __all__ = ("NetBoxDNSRegistrationContactFilter",)
 
 @strawberry_django.filter_type(RegistrationContact, lookups=True)
 class NetBoxDNSRegistrationContactFilter(PrimaryModelFilter):
-    name: FilterLookup[str] | None = strawberry_django.filter_field()
-    contact_id: FilterLookup[str] | None = strawberry_django.filter_field()
-    organization: FilterLookup[str] | None = strawberry_django.filter_field()
-    street: FilterLookup[str] | None = strawberry_django.filter_field()
-    city: FilterLookup[str] | None = strawberry_django.filter_field()
-    state_province: FilterLookup[str] | None = strawberry_django.filter_field()
-    postal_code: FilterLookup[str] | None = strawberry_django.filter_field()
-    country: FilterLookup[str] | None = strawberry_django.filter_field()
-    phone: FilterLookup[str] | None = strawberry_django.filter_field()
-    phone_ext: FilterLookup[str] | None = strawberry_django.filter_field()
-    fax: FilterLookup[str] | None = strawberry_django.filter_field()
-    fax_ext: FilterLookup[str] | None = strawberry_django.filter_field()
-    email: FilterLookup[str] | None = strawberry_django.filter_field()
+    name: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    contact_id: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    organization: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    street: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    city: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    state_province: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    postal_code: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    country: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    phone: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    phone_ext: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    fax: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    fax_ext: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    email: StrFilterLookup[str] | None = strawberry_django.filter_field()

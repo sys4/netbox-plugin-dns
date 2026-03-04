@@ -2,7 +2,7 @@ from typing import Annotated, TYPE_CHECKING
 
 import strawberry
 import strawberry_django
-from strawberry_django import FilterLookup
+from strawberry_django import StrFilterLookup
 
 from netbox.graphql.filters import PrimaryModelFilter
 
@@ -16,13 +16,13 @@ __all__ = ("NetBoxDNSRegistrarFilter",)
 
 @strawberry_django.filter_type(Registrar, lookups=True)
 class NetBoxDNSRegistrarFilter(PrimaryModelFilter):
-    name: FilterLookup[str] | None = strawberry_django.filter_field()
+    name: StrFilterLookup[str] | None = strawberry_django.filter_field()
     iana_id: (
         Annotated["IntegerLookup", strawberry.lazy("netbox.graphql.filter_lookups")]
         | None
     ) = strawberry_django.filter_field()
-    address: FilterLookup[str] | None = strawberry_django.filter_field()
-    referral_url: FilterLookup[str] | None = strawberry_django.filter_field()
-    whois_server: FilterLookup[str] | None = strawberry_django.filter_field()
-    abuse_email: FilterLookup[str] | None = strawberry_django.filter_field()
-    abuse_phone: FilterLookup[str] | None = strawberry_django.filter_field()
+    address: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    referral_url: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    whois_server: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    abuse_email: StrFilterLookup[str] | None = strawberry_django.filter_field()
+    abuse_phone: StrFilterLookup[str] | None = strawberry_django.filter_field()
