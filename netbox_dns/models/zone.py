@@ -912,6 +912,8 @@ class Zone(ObjectModificationMixin, ContactsMixin, PrimaryModel):
 
         if self.is_reverse_zone:
             self.arpa_network = self.network_from_name
+        else:
+            self.arpa_network = None
 
         if self.is_rfc2317_zone:
             if self.arpa_network is not None:
