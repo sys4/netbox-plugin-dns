@@ -358,3 +358,13 @@ class RFC2317ZoneTestCase(TestCase):
         self.assertTrue(rfc2317_zone.rfc2317_parent_managed)
         self.assertIn(rfc2317_zone, zone2.rfc2317_child_zones.all())
         self.assertEqual(rfc2317_zone.rfc2317_parent_zone, zone2)
+
+    def test_modify_zone_to_rfc2317(self):
+        zone = Zone.objects.create(name="2.0.192.in-addr.arpa", **self.zone_data)
+
+        zone.name = "0-15.2.0.192.in-addr.arpa"
+        zone.rfc2317_prefix = "192.0.2.0/28"
+        zone.save()
+
+        self.assertFalse(zone.is_reverse_zone)
+        self.assertTrue(zone.is_rfc2317_zone)
