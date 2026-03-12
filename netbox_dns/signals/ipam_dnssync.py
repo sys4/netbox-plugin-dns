@@ -120,6 +120,7 @@ def ipam_dnssync_ipaddress_pre_save(instance, **kwargs):
 
 @receiver(post_save, sender=IPAddress)
 def ipam_dnssync_ipaddress_post_save(instance, **kwargs):
+    instance.refresh_from_db()
     update_dns_records(instance)
 
 

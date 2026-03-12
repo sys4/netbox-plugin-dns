@@ -19,7 +19,12 @@ from netbox.plugins.utils import get_plugin_config
 from utilities.querysets import RestrictedQuerySet
 
 from netbox_dns.fields import AddressField
-from netbox_dns.utilities import arpa_to_prefix, name_to_unicode, check_filter
+from netbox_dns.utilities import (
+    arpa_to_prefix,
+    name_to_unicode,
+    check_filter,
+    get_cidr_address,
+)
 from netbox_dns.validators import validate_generic_name, validate_record_value
 from netbox_dns.mixins import ObjectModificationMixin
 from netbox_dns.choices import (
@@ -55,6 +60,8 @@ def record_data_from_ip_address(ip_address, zone):
     ):
         return None
 
+    address = get_cidr_address(ip_address)
+
     data = {
         "name": (
             dns_name.from_text(ip_address.dns_name)
@@ -62,11 +69,9 @@ def record_data_from_ip_address(ip_address, zone):
             .to_text()
         ),
         "type": (
-            RecordTypeChoices.A
-            if ip_address.address.version == 4
-            else RecordTypeChoices.AAAA
+            RecordTypeChoices.A if address.version == 4 else RecordTypeChoices.AAAA
         ),
-        "value": str(ip_address.address.ip),
+        "value": str(address.ip),
         "status": (
             RecordStatusChoices.STATUS_ACTIVE
             if ip_address.status
