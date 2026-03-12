@@ -3,6 +3,7 @@ import re
 from collections import defaultdict
 
 from dns import name as dns_name
+from netaddr import IPNetwork
 
 from django.conf import settings
 from django.db.models import Q
@@ -27,13 +28,16 @@ __all__ = (
     "check_record_permission",
     "get_query_from_filter",
     "check_filter",
+    "get_cidr_address",
 )
 
 
 def _get_assigned_views(ip_address):
+    address = get_cidr_address(ip_address)
+
     longest_prefix = Prefix.objects.filter(
         vrf=ip_address.vrf,
-        prefix__net_contains_or_equals=str(ip_address.address.ip),
+        prefix__net_contains_or_equals=address,
         netbox_dns_views__isnull=False,
     ).last()
 
@@ -65,9 +69,11 @@ def _match_data(ip_address, record):
         "ipaddress_dns_record_disable_ptr"
     )
 
+    address = get_cidr_address(ip_address)
+
     return (
         record.fqdn.rstrip(".") == ip_address.dns_name.rstrip(".")
-        and record.value == str(ip_address.address.ip)
+        and record.value == str(address.ip)
         and record.status == _get_record_status(ip_address)
         and record.ttl == ip_address.custom_field_data.get("ipaddress_dns_record_ttl")
         and (cf_disable_ptr is None or record.disable_ptr == cf_disable_ptr)
@@ -227,13 +233,14 @@ def delete_dns_records(ip_address, view=None):
         #
         # TODO: Find something better. This is really awful.
         # -
+        address = get_cidr_address(ip_address)
         address_records = Record.objects.filter(
             Q(
                 Q(ipam_ip_address=ip_address)
                 | Q(
                     type__in=(RecordTypeChoices.A, RecordTypeChoices.AAAA),
                     managed=True,
-                    ip_address=ip_address.address,
+                    ip_address=address,
                     ipam_ip_address__isnull=True,
                 )
             ),
@@ -367,3 +374,17 @@ def check_filter(ip_address, ip_address_filter):
     against = ip_address._get_field_expression_map(meta=IPAddress._meta)
 
     return query.check(against)
+
+
+def get_cidr_address(ip_address):
+    # +
+    # Always return an IPNetwork object, regardless if the address field is a
+    # string or an IPNetwork object.
+    #
+    # This is required because an IPAddress may have a string in that field
+    # if it has not been retrieved from the database.
+    # -
+    if type(ip_address.address) is str:
+        return IPNetwork(ip_address.address)
+    else:
+        return ip_address.address

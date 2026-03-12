@@ -1198,3 +1198,28 @@ class DNSsyncIPAddressTestCase(TestCase):
         ip_address.save()
 
         self.assertFalse(Record.objects.filter(ipam_ip_address=ip_address).exists())
+
+    def test_filter_ip_address(self):
+        # +
+        # This is a very specific test for a strange condition that occurred when
+        # using the Slurp'it plugin (see ).
+        #
+        # Essentially, a string was stored in the address field of an IPAddress
+        # object, which is perfectly legal, and then save() is called on that
+        # object. Saving converts the string to an IPNetwork object, which is
+        # used in a comparison to the ip_address field in records.
+        #
+        # Since the IP address as a string couldn't be compared to the ip_address
+        # field, which is of the AddressField type, this led to an exception.
+        #
+        # The result of the filter() operation does not matter, it just needs to
+        # succeed without throwing an exception.
+        # -
+        ip_address = IPAddress.objects.create(
+            address="2001:db8::1/64",
+            dns_name="name1.zone1.example.com",
+            custom_field_data={"ipaddress_dns": True},
+        )
+        ip_address.save()
+
+        Record.objects.filter(ip_address=ip_address.address)
