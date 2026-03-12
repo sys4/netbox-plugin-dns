@@ -1070,6 +1070,14 @@ class Zone(ObjectModificationMixin, ContactsMixin, PrimaryModel):
             for ip_address in ip_addresses.distinct():
                 update_dns_records(ip_address)
 
+        if (
+            self.rfc2317_prefix is not None
+            and changed_fields is not None
+            and "rfc2317_prefix" in changed_fields
+        ):
+            for zone in self.rfc2317_child_zones.all():
+                zone.update_rfc2317_parent_zone()
+
         self.save_soa_serial()
         self.update_soa_record()
 

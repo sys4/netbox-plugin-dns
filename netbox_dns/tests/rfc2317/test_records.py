@@ -1700,3 +1700,52 @@ class RFC2317RecordTestCase(TestCase):
         records[0].ptr_record.refresh_from_db()
 
         self.assertEqual(records[1].ptr_record.rfc2317_cname_record.ttl, 86400)
+
+    def test_modify_zone_to_rfc2317_cleanup_cnames(self):
+        zone = Zone.objects.create(name="2.0.192.in-addr.arpa", **self.zone_data)
+        rfc2317_zone = Zone.objects.create(
+            name="0-15.2.0.192.in-addr.arpa",
+            rfc2317_prefix="192.0.2.0/28",
+            rfc2317_parent_managed=True,
+            **self.zone_data,
+        )
+
+        Record.objects.create(
+            name="host1",
+            zone=self.zones[0],
+            type=RecordTypeChoices.A,
+            value="192.0.2.1",
+        )
+
+        self.assertTrue(
+            Record.objects.filter(
+                zone=rfc2317_zone,
+                name="1",
+                type=RecordTypeChoices.PTR,
+                value="host1.zone1.example.com.",
+            ).exists()
+        )
+        self.assertTrue(
+            Record.objects.filter(
+                zone=zone,
+                name="1",
+                type=RecordTypeChoices.CNAME,
+                value="1.0-15.2.0.192.in-addr.arpa.",
+            ).exists()
+        )
+
+        zone.name = "16-31.2.0.192.in-addr.arpa"
+        zone.rfc2317_prefix = "192.0.2.16/28"
+        zone.save()
+
+        self.assertFalse(zone.is_reverse_zone)
+        self.assertTrue(zone.is_rfc2317_zone)
+
+        self.assertFalse(
+            Record.objects.filter(
+                zone=zone,
+                name="1",
+                type=RecordTypeChoices.CNAME,
+                value="1.0-15.2.0.192.in-addr.arpa.",
+            ).exists()
+        )
