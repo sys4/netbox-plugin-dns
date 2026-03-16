@@ -1199,7 +1199,7 @@ class DNSsyncIPAddressTestCase(TestCase):
 
         self.assertFalse(Record.objects.filter(ipam_ip_address=ip_address).exists())
 
-    def test_filter_ip_address(self):
+    def test_ip_address_with_cidr_string(self):
         # +
         # This is a very specific test for a strange condition that occurred when
         # using the Slurp'it plugin (see ).
