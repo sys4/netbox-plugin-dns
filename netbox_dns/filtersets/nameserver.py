@@ -4,6 +4,7 @@ from django.db.models import Q
 from netbox.filtersets import PrimaryModelFilterSet
 from tenancy.filtersets import TenancyFilterSet
 from utilities.filtersets import register_filterset
+from utilities.filters import MultiValueCharFilter
 
 from netbox_dns.models import NameServer, Zone
 
@@ -17,7 +18,7 @@ class NameServerFilterSet(TenancyFilterSet, PrimaryModelFilterSet):
 
         fields = ("id",)
 
-    name = django_filters.CharFilter()
+    name = MultiValueCharFilter()
     description = django_filters.CharFilter()
     zone_id = django_filters.ModelMultipleChoiceFilter(
         field_name="zones",

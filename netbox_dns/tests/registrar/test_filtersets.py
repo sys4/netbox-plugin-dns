@@ -47,7 +47,7 @@ class RegistrarFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         Registrar.objects.bulk_create(cls.registrars)
 
     def test_name(self):
-        params = {"name__regex": r"ACME 2 (Corporation|Trust)"}
+        params = {"name": ["ACME 2 Corporation", "ACME 2 Trust"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_description(self):

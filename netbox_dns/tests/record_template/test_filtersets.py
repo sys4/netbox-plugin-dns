@@ -96,7 +96,7 @@ class RecordTemplateFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         cls.zone_templates[2].record_templates.set(cls.record_templates[3:6])
 
     def test_name(self):
-        params = {"name__regex": r"Test Record Template [13]"}
+        params = {"name": ["Test Record Template 1", "Test Record Template 3"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_description(self):

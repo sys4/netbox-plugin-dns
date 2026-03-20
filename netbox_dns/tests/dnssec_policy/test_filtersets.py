@@ -157,7 +157,7 @@ class DNSSECPolicyFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         cls.dnssec_policies[2].key_templates.set([cls.dnssec_key_templates[1]])
 
     def test_name(self):
-        params = {"name__regex": r"Test Policy [12]"}
+        params = {"name": ["Test Policy 1", "Test Policy 2"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_description(self):

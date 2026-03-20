@@ -5,6 +5,7 @@ from django.db.models import Q
 from netbox.filtersets import PrimaryModelFilterSet
 from tenancy.filtersets import TenancyFilterSet
 from utilities.filtersets import register_filterset
+from utilities.filters import MultiValueCharFilter
 from ipam.models import Prefix
 
 from netbox_dns.models import View
@@ -22,7 +23,7 @@ class ViewFilterSet(TenancyFilterSet, PrimaryModelFilterSet):
             "default_view",
         )
 
-    name = django_filters.CharFilter()
+    name = MultiValueCharFilter()
     description = django_filters.CharFilter()
     prefix_id = django_filters.ModelMultipleChoiceFilter(
         queryset=Prefix.objects.all(),

@@ -65,7 +65,7 @@ class RegistrationContactFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests)
         RegistrationContact.objects.bulk_create(cls.contacts)
 
     def test_name(self):
-        params = {"name__regex": r"(Fred|Paul) Example"}
+        params = {"name": ["Fred Example", "Paul Example"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_description(self):

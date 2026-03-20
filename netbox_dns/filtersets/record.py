@@ -5,8 +5,8 @@ from django.db.models import Q
 
 from netbox.filtersets import PrimaryModelFilterSet
 from tenancy.filtersets import TenancyFilterSet
-from utilities.filters import MultiValueCharFilter
 from utilities.filtersets import register_filterset
+from utilities.filters import MultiValueCharFilter
 
 from ipam.models import IPAddress
 
@@ -28,7 +28,7 @@ class RecordFilterSet(TenancyFilterSet, PrimaryModelFilterSet):
             "managed",
         )
 
-    name = django_filters.CharFilter()
+    name = MultiValueCharFilter()
     description = django_filters.CharFilter()
     fqdn = django_filters.CharFilter()
     ttl = TimePeriodFilter()
