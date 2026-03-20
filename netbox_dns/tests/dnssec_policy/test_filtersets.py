@@ -161,7 +161,7 @@ class DNSSECPolicyFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_description(self):
-        params = {"description__regex": r"Test DNSSEC Policy [12]"}
+        params = {"description": ["Test DNSSEC Policy 1", "Test DNSSEC Policy 2"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_status(self):
@@ -280,11 +280,11 @@ class DNSSECPolicyFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
 
     def test_nsec3_iterations(self):
-        params = {"nsec3_iterations__gt": 0}
+        params = {"nsec3_iterations": [1, 2, 3]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_nsec3_salt_size(self):
-        params = {"nsec3_salt_size__gt": 0}
+        params = {"nsec3_salt_size": [16, 32]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
 
     def test_key_template(self):

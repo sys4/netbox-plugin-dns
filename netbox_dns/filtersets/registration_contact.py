@@ -1,10 +1,7 @@
-import django_filters
-
 from django.db.models import Q
 
 from netbox.filtersets import PrimaryModelFilterSet
 from utilities.filtersets import register_filterset
-from utilities.filters import MultiValueCharFilter
 
 from netbox_dns.models import RegistrationContact
 
@@ -16,22 +13,23 @@ class RegistrationContactFilterSet(PrimaryModelFilterSet):
     class Meta:
         model = RegistrationContact
 
-        fields = ("id",)
-
-    name = MultiValueCharFilter()
-    description = django_filters.CharFilter()
-    contact_id = django_filters.NumberFilter()
-    organization = django_filters.CharFilter()
-    street = django_filters.CharFilter()
-    city = django_filters.CharFilter()
-    state_province = django_filters.CharFilter()
-    postal_code = django_filters.CharFilter()
-    country = django_filters.CharFilter()
-    phone = django_filters.CharFilter()
-    phone_ext = django_filters.CharFilter()
-    fax = django_filters.CharFilter()
-    fax_ext = django_filters.CharFilter()
-    email = django_filters.CharFilter()
+        fields = (
+            "id",
+            "name",
+            "description",
+            "contact_id",
+            "organization",
+            "street",
+            "city",
+            "state_province",
+            "postal_code",
+            "country",
+            "phone",
+            "phone_ext",
+            "fax",
+            "fax_ext",
+            "email",
+        )
 
     def search(self, queryset, name, value):
         if not value.strip():

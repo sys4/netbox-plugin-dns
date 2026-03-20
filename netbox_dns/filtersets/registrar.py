@@ -1,10 +1,7 @@
-import django_filters
-
 from django.db.models import Q
 
 from netbox.filtersets import PrimaryModelFilterSet
 from utilities.filtersets import register_filterset
-from utilities.filters import MultiValueCharFilter
 
 from netbox_dns.models import Registrar
 
@@ -16,16 +13,17 @@ class RegistrarFilterSet(PrimaryModelFilterSet):
     class Meta:
         model = Registrar
 
-        fields = ("id",)
-
-    name = MultiValueCharFilter()
-    description = django_filters.CharFilter()
-    iana_id = django_filters.CharFilter()
-    address = django_filters.CharFilter()
-    referral_url = django_filters.CharFilter()
-    whois_server = django_filters.CharFilter()
-    abuse_email = django_filters.CharFilter()
-    abuse_phone = django_filters.CharFilter()
+        fields = (
+            "id",
+            "name",
+            "description",
+            "iana_id",
+            "address",
+            "referral_url",
+            "whois_server",
+            "abuse_email",
+            "abuse_phone",
+        )
 
     def search(self, queryset, name, value):
         if not value.strip():

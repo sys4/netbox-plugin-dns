@@ -100,7 +100,7 @@ class RecordTemplateFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_description(self):
-        params = {"description__regex": r"Test Record Template [12]"}
+        params = {"description": ["Test Record Template 1", "Test Record Template 2"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_record_name(self):

@@ -314,7 +314,7 @@ class ZoneFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 4)
 
     def test_description(self):
-        params = {"description__regex": r"Test Zone [1-3]"}
+        params = {"description": ["Test Zone 1", "Test Zone 2", "Test Zone 3"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 3)
         params = {"description__empty": False}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 4)
@@ -352,14 +352,12 @@ class ZoneFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_soa_rname(self):
-        params = {"soa_rname__regex": r"hostmaster\..*"}
+        params = {"soa_rname": ["hostmaster.example.com"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 9)
-        params = {"soa_rname__isw": "hostmaster2."}
-        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 4)
 
     def test_soa_serial(self):
-        params = {"soa_serial__gt": 1000000}
-        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 5)
+        params = {"soa_serial": [1]}
+        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 8)
 
     def test_soa_ttl(self):
         params = {"soa_ttl": 86400}
@@ -428,7 +426,14 @@ class ZoneFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
 
     def test_registry_domain_id(self):
-        params = {"registry_domain_id__regex": r"^acme-00[12]"}
+        params = {
+            "registry_domain_id": [
+                "acme-001-4242",
+                "acme-001-2323",
+                "acme-002-4242",
+                "acme-002-2323",
+            ]
+        }
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 4)
 
     def test_registrant(self):

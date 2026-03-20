@@ -113,7 +113,14 @@ class RecordFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 4)
 
     def test_description(self):
-        params = {"description__iregex": r"test record [1-4]"}
+        params = {
+            "description": [
+                "Test Record 1",
+                "Test Record 2",
+                "Test Record 3",
+                "Test Record 4",
+            ]
+        }
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 4)
 
     def test_zone(self):
@@ -123,10 +130,22 @@ class RecordFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 4)
 
     def test_fqdn(self):
-        params = {"fqdn__regex": r"name[124]\.zone1\..*"}
+        params = {
+            "fqdn": [
+                "name1.zone1.example.com.",
+                "name2.zone1.example.com.",
+                "name4.zone1.example.com.",
+            ]
+        }
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
-        params = {"fqdn__iew": "zone2.example.com."}
-        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 4)
+        params = {
+            "fqdn": [
+                "name1.zone2.example.com.",
+                "name2.zone2.example.com.",
+                "name2.zone1.example.",
+            ]
+        }
+        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_type(self):
         params = {"type": [RecordTypeChoices.A]}
@@ -134,12 +153,18 @@ class RecordFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         params = {"type": [RecordTypeChoices.AAAA]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 4)
 
+    def test_status(self):
+        params = {"status": [RecordStatusChoices.STATUS_INACTIVE]}
+        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
+        params = {"status": [RecordStatusChoices.STATUS_ACTIVE]}
+        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 8)
+
     def test_value(self):
-        params = {"value": "10.0.0.42"}
+        params = {"value": ["10.0.0.42"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
-        params = {"value": "fe80::dead:beef"}
+        params = {"value": ["fe80::dead:beef"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 4)
-        params = {"value__regex": r"(fe80::dead:beef|10.0.0.42)"}
+        params = {"value": ["fe80::dead:beef", "10.0.0.42"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 6)
 
     def test_managed(self):

@@ -4,7 +4,6 @@ from django.db.models import Q
 from netbox.filtersets import PrimaryModelFilterSet
 from tenancy.filtersets import TenancyFilterSet
 from utilities.filtersets import register_filterset
-from utilities.filters import MultiValueCharFilter
 
 from netbox_dns.models import DNSSECKeyTemplate, DNSSECPolicy
 from netbox_dns.choices import (
@@ -22,10 +21,12 @@ class DNSSECKeyTemplateFilterSet(TenancyFilterSet, PrimaryModelFilterSet):
     class Meta:
         model = DNSSECKeyTemplate
 
-        fields = ("id",)
+        fields = (
+            "id",
+            "name",
+            "description",
+        )
 
-    name = MultiValueCharFilter()
-    description = django_filters.CharFilter()
     type = django_filters.MultipleChoiceFilter(
         choices=DNSSECKeyTemplateTypeChoices,
     )

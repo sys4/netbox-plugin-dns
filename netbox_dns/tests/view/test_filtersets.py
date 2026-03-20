@@ -42,7 +42,7 @@ class ViewFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_description(self):
-        params = {"description__regex": r"Test View [12]"}
+        params = {"description": ["Test View 1", "Test View 2"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_default_view(self):
