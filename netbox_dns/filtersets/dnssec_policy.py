@@ -4,8 +4,8 @@ from django.db.models import Q
 
 from netbox.filtersets import PrimaryModelFilterSet
 from tenancy.filtersets import TenancyFilterSet
-from utilities.filters import MultiValueCharFilter
 from utilities.filtersets import register_filterset
+from utilities.filters import MultiValueCharFilter
 
 from netbox_dns.models import DNSSECPolicy, DNSSECKeyTemplate, Zone, ZoneTemplate
 from netbox_dns.choices import DNSSECPolicyStatusChoices
@@ -28,7 +28,7 @@ class DNSSECPolicyFilterSet(TenancyFilterSet, PrimaryModelFilterSet):
             "nsec3_opt_out",
         )
 
-    name = django_filters.CharFilter()
+    name = MultiValueCharFilter()
     description = django_filters.CharFilter()
     status = django_filters.MultipleChoiceFilter(
         choices=DNSSECPolicyStatusChoices,

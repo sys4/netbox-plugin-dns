@@ -4,6 +4,7 @@ from django.db.models import Q
 
 from netbox.filtersets import PrimaryModelFilterSet
 from utilities.filtersets import register_filterset
+from utilities.filters import MultiValueCharFilter
 
 from netbox_dns.models import Registrar
 
@@ -17,7 +18,7 @@ class RegistrarFilterSet(PrimaryModelFilterSet):
 
         fields = ("id",)
 
-    name = django_filters.CharFilter()
+    name = MultiValueCharFilter()
     description = django_filters.CharFilter()
     iana_id = django_filters.CharFilter()
     address = django_filters.CharFilter()

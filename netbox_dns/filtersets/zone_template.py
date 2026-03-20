@@ -29,7 +29,7 @@ class ZoneTemplateFilterSet(TenancyFilterSet, PrimaryModelFilterSet):
 
         fields = ("id",)
 
-    name = django_filters.CharFilter()
+    name = MultiValueCharFilter()
     description = django_filters.CharFilter()
     record_template_id = django_filters.ModelMultipleChoiceFilter(
         queryset=RecordTemplate.objects.all(),

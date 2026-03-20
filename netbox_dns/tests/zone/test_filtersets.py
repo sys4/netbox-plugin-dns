@@ -310,7 +310,7 @@ class ZoneFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
             )
 
     def test_name(self):
-        params = {"name__regex": r"zone[12].example.com"}
+        params = {"name": ["zone1.example.com", "zone2.example.com"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 4)
 
     def test_description(self):

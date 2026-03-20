@@ -38,7 +38,7 @@ class ViewFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         View.objects.bulk_create(cls.views)
 
     def test_name(self):
-        params = {"name__regex": r"View [12]"}
+        params = {"name": ["View 1", "View 2"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_description(self):

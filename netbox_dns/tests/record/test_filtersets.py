@@ -109,7 +109,7 @@ class RecordFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
             record.save()
 
     def test_name(self):
-        params = {"name__regex": r"name[12]"}
+        params = {"name": ["name1", "name2"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 4)
 
     def test_description(self):

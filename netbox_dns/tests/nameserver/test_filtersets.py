@@ -74,7 +74,7 @@ class NameServerFiterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         )
 
     def test_name(self):
-        params = {"name__regex": r"ns[12].example.com"}
+        params = {"name": ["ns1.example.com", "ns2.example.com"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_description(self):

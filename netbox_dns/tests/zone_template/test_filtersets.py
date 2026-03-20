@@ -185,7 +185,7 @@ class ZoneTemplateFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
             )
 
     def test_name(self):
-        params = {"name__regex": r"Zone Template [13]"}
+        params = {"name": ["Zone Template 1", "Zone Template 3"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_descirption(self):

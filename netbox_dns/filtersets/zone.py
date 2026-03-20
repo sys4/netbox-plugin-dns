@@ -36,7 +36,7 @@ class ZoneFilterSet(TenancyFilterSet, PrimaryModelFilterSet):
             "inline_signing",
         )
 
-    name = django_filters.CharFilter()
+    name = MultiValueCharFilter()
     description = django_filters.CharFilter()
     status = django_filters.MultipleChoiceFilter(
         choices=ZoneStatusChoices,

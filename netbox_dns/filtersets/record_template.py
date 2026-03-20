@@ -4,6 +4,7 @@ from django.db.models import Q
 from netbox.filtersets import PrimaryModelFilterSet
 from tenancy.filtersets import TenancyFilterSet
 from utilities.filtersets import register_filterset
+from utilities.filters import MultiValueCharFilter
 
 from netbox_dns.models import RecordTemplate, ZoneTemplate
 from netbox_dns.choices import RecordTypeChoices, RecordStatusChoices
@@ -25,7 +26,7 @@ class RecordTemplateFilterSet(TenancyFilterSet, PrimaryModelFilterSet):
             "disable_ptr",
         )
 
-    name = django_filters.CharFilter()
+    name = MultiValueCharFilter()
     description = django_filters.CharFilter()
     ttl = TimePeriodFilter()
     type = django_filters.MultipleChoiceFilter(
