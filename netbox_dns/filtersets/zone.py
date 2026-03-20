@@ -30,14 +30,18 @@ class ZoneFilterSet(TenancyFilterSet, PrimaryModelFilterSet):
 
         fields = (
             "id",
+            "name",
+            "description",
+            "soa_rname",
+            "soa_serial",
             "soa_serial_auto",
             "rfc2317_parent_managed",
             "domain_status",
             "inline_signing",
+            "registry_domain_id",
+            "expiration_date",
         )
 
-    name = MultiValueCharFilter()
-    description = django_filters.CharFilter()
     status = django_filters.MultipleChoiceFilter(
         choices=ZoneStatusChoices,
     )
@@ -67,8 +71,6 @@ class ZoneFilterSet(TenancyFilterSet, PrimaryModelFilterSet):
         field_name="soa_mname__name",
         to_field_name="name",
     )
-    soa_rname = django_filters.CharFilter()
-    soa_serial = django_filters.NumberFilter()
     soa_ttl = TimePeriodFilter()
     soa_refresh = TimePeriodFilter()
     soa_retry = TimePeriodFilter()
@@ -105,7 +107,6 @@ class ZoneFilterSet(TenancyFilterSet, PrimaryModelFilterSet):
         field_name="registrar__name",
         to_field_name="name",
     )
-    registry_domain_id = django_filters.CharFilter()
     expiration_date = django_filters.DateFromToRangeFilter()
     domain_status = django_filters.MultipleChoiceFilter(
         choices=ZoneEPPStatusChoices,

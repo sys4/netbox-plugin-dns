@@ -58,7 +58,7 @@ class DNSSECKeyTemplateFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_description(self):
-        params = {"description__regex": r"Test [KC]SK"}
+        params = {"description": ["Test KSK", "Test CSK"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_type(self):

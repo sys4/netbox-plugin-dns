@@ -15,7 +15,6 @@ class RegistrationContactFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests)
         cls.contacts = (
             RegistrationContact(
                 name="Paul Example",
-                description="Test Contact 1",
                 contact_id=4242,
                 organization="Example Corp.",
                 street="Example Avenue",
@@ -31,7 +30,6 @@ class RegistrationContactFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests)
             ),
             RegistrationContact(
                 name="Fred Example",
-                description="Test Contact 2",
                 contact_id=2323,
                 organization="Example Corp.",
                 street="Example Avenue",
@@ -47,7 +45,6 @@ class RegistrationContactFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests)
             ),
             RegistrationContact(
                 name="Jack Example",
-                description="Test Contact 3",
                 contact_id=4223,
                 organization="Example Trust",
                 street="Example Lane",
@@ -68,55 +65,46 @@ class RegistrationContactFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests)
         params = {"name": ["Fred Example", "Paul Example"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
-    def test_description(self):
-        params = {"description__regex": r"Test Contact [12]"}
-        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
-
     def test_contact_id(self):
-        params = {"contact_id": 2323}
-        self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
-        params = {"contact_id__gt": 4000}
+        params = {"contact_id": [2323, 4223, 1234]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_organization(self):
-        params = {"organization": "Example Corp."}
+        params = {"organization": ["Example Corp."]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_street(self):
-        params = {"street": "Example Lane"}
+        params = {"street": ["Example Lane"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
 
     def test_city(self):
-        params = {"city": "Exampletown"}
+        params = {"city": ["Exampletown"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_state_province(self):
-        params = {"state_province": "Bad Example"}
+        params = {"state_province": ["Bad Example"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
 
     def test_postal_code(self):
-        params = {"postal_code__regex": r"(04242|00707)"}
+        params = {"postal_code": ["04242", "00707"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_country(self):
-        params = {"country__isw": "e"}
+        params = {"country": ["EX", "EY"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
 
     def test_phone(self):
-        params = {"phone__regex": r"\+49\.555\.(424242|1111)"}
+        params = {"phone": ["+49.555.424242", "+49.555.1111"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
-        params = {"phone__iregex": r"\+49\.555\.(424242|1111)", "phone_ext": "42"}
+        params = {"phone": ["+49.555.424242", "+49.555.1111"], "phone_ext": ["42"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
 
     def test_fax(self):
-        params = {"fax__regex": r"\+49\.555\.(424242|1111)"}
+        params = {"fax": ["+49.555.424242", "+49.555.11111"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)
-        params = {
-            "fax__regex": r"\+49\.555\.(424242|1111)",
-            "fax_ext__regex": r"[21][24]",
-        }
+        params = {"fax": ["+49.555.424242", "+49.555.11111"], "fax_ext": ["32", "24"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 1)
 
     def test_email(self):
-        params = {"email__regex": r"((paul|jack)@example|pete@acme)\.(com|org)"}
+        params = {"email": ["paul@example.com", "jack@example.org", "pete@acme.com"]}
         self.assertEqual(self.filterset(params, self.queryset).qs.count(), 2)

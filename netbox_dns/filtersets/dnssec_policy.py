@@ -21,15 +21,16 @@ class DNSSECPolicyFilterSet(TenancyFilterSet, PrimaryModelFilterSet):
 
         fields = (
             "id",
-            "status",
+            "name",
+            "description",
             "inline_signing",
             "create_cdnskey",
             "use_nsec3",
             "nsec3_opt_out",
+            "nsec3_iterations",
+            "nsec3_salt_size",
         )
 
-    name = MultiValueCharFilter()
-    description = django_filters.CharFilter()
     status = django_filters.MultipleChoiceFilter(
         choices=DNSSECPolicyStatusChoices,
     )
@@ -57,8 +58,6 @@ class DNSSECPolicyFilterSet(TenancyFilterSet, PrimaryModelFilterSet):
     zone_propagation_delay = TimePeriodFilter()
     parent_ds_ttl = TimePeriodFilter()
     parent_propagation_delay = TimePeriodFilter()
-    nsec3_iterations = django_filters.NumberFilter()
-    nsec3_salt_size = django_filters.NumberFilter()
     zone = django_filters.ModelMultipleChoiceFilter(
         field_name="zones__name",
         queryset=Zone.objects.all(),
