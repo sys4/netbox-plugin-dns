@@ -462,7 +462,7 @@ Records can either be displayed by opening the record list view from the "Record
 When importing records in bulk, the mandatory fields are `name`, `zone`, `type` and `value`. If the optional `view` field is not specified, NetBox DNS will always look for the zone specified in `zone` in the default view. To address zones in non-default views, the `view` field must also be specified.
 
 #### Configuration options
-The configuration variable `filter_record_types` and `filter_record_types+` can be used to limit the list of record types that are available in the GUI forms. The difference is how the list of records specified is applied to the default list of record types: `filter_record_types` **replaces** the default list of filtered record types, while `filter_record_types+` **adds** to the list. 
+The configuration variable `filter_record_types` and `filter_record_types+` can be used to limit the list of record types that are available in the GUI forms. The difference is how the list of records specified is applied to the default list of record types: `filter_record_types` **replaces** the default list of filtered record types, while `filter_record_types+` **adds** to the list.
 
 For example if you are tired of IPv4 the creation of A records can be disabled by setting
 
@@ -475,7 +475,7 @@ PLUGINS_CONFIG = {
     }
 }
 ```
-This will result in all record types not in the default filter list being available in the GUI except A. 
+This will result in all record types not in the default filter list being available in the GUI except A.
 
 Alternatively it is possible to remove record types from the list by specifying `filter_record_types-` like this:
 ```
@@ -518,7 +518,7 @@ Variable                             | Factory Default
 `filter_record_types-`               | `[]`
 `custom_record_types`                | `[]`
 
-The configuration variable `custom_record_types` can be used to add non-standard record types such as PowerDNS' LUA or Cloudflare's ALIAS. 
+The configuration variable `custom_record_types` can be used to add non-standard record types such as PowerDNS' LUA or Cloudflare's ALIAS.
 
 ```
 PLUGINS_CONFIG = {
@@ -530,7 +530,7 @@ PLUGINS_CONFIG = {
 }
 ```
 
-The configured record types will be allowed in the GUI, the API, via custom scripts etc, and they will be treated as valid record types. There is, however, no validation of the values of these record types whatsoever, including the checking of length of the RDATA. If validation of custom record types is desired, a custom validator must be implemented. 
+The configured record types will be allowed in the GUI, the API, via custom scripts etc, and they will be treated as valid record types. There is, however, no validation of the values of these record types whatsoever, including the checking of length of the RDATA. If validation of custom record types is desired, a custom validator must be implemented.
 
 ### Registrars
 Registrar objects relate to the DNS domain registration and represent the registrar information for DNS domains related to zones. A DNS zone does not necessarily need to be registered: Zones that are not available via public DNS or that are sub-zones of registered zones do not require registration. In most cases registration information is only required (and possible) for second-level domains.
@@ -1410,5 +1410,22 @@ PLUGINS_CONFIG = {
 	},
 }
 ```
-
 Every status configured here must be one of the pre-defined statuses or have been defined in `FIELD_CHOICES`. Make sure to include the standard statuses as shown above.
+
+#### <a name="record_default_ttl_customization"></a>Customizing default TTLs for RRTYPEs
+Default TTL values per record type can be configured using the configuration variable `record_type_default_ttl`. This can be useful if a specific record type such as SPF or TLSA should always be created with a or longer TTL, while all other types use the zone default value.
+
+```
+PLUGINS_CONFIG = {
+    'netbox_dns': {
+        'record_type_default_ttl': {
+            'TLSA': 60,
+            'HTTPS': 60,
+            'MX': 300,
+        }
+	},
+}
+```
+The effect of the above setting is that any new TXT, HTTPS. or MX record that is created without a specific TTL assigned will be created with the TTL specified as the value for its type. Records with an explicitly specified TTL will not be modified.
+
+The type-specific TTL is also applied to records created from record templates.
