@@ -71,6 +71,11 @@ class DNSConfig(PluginConfig):
             "NSEC3",
             "RRSIG",
         ],
+        "record_type_default_ttl": {
+            # Examples:
+            # "MX": 3600,
+            # "TLSA": 60,
+        },
         "filter_record_types+": [],
         "filter_record_types-": [],
         "custom_record_types": [],
