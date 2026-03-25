@@ -832,6 +832,15 @@ class Record(ObjectModificationMixin, ContactsMixin, PrimaryModel):
 
     handle_conflicting_address_records.alters_data = True
 
+    @property
+    def default_ttl(self):
+        if self.ttl is not None:
+            return self.ttl
+
+        return get_plugin_config("netbox_dns", "record_type_default_ttl", {}).get(
+            self.type
+        )
+
     def check_unique_rrset_ttl(self):
         if not self._state.adding:
             return
@@ -926,6 +935,7 @@ class Record(ObjectModificationMixin, ContactsMixin, PrimaryModel):
         self.validate_name(new_zone=new_zone)
         self.validate_value()
         self.check_unique_record(new_zone=new_zone)
+        self.ttl = self.default_ttl
         if self._state.adding:
             self.check_unique_rrset_ttl()
 
