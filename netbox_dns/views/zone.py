@@ -51,12 +51,10 @@ class ZoneView(generic.ObjectView):
 
     def get_extra_context(self, request, instance):
         ns_warnings, ns_errors = instance.check_nameservers()
-        mname_warning = instance.check_soa_mname()
 
         context = {
             "nameserver_warnings": ns_warnings,
             "nameserver_errors": ns_errors,
-            "mname_warning": mname_warning,
             "parent_zone": instance.parent_zone,
         }
 

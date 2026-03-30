@@ -634,9 +634,6 @@ class Zone(ObjectModificationMixin, ContactsMixin, PrimaryModel):
 
         return ns_warnings, ns_errors
 
-    def check_soa_mname(self):
-        return self._check_nameserver_address_records(self.soa_mname)
-
     def check_expiration(self):
         if self.expiration_date is None:
             return None, None
