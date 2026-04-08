@@ -126,6 +126,13 @@ class Record(ObjectModificationMixin, ContactsMixin, PrimaryModel):
             "status",
         )
 
+        indexes = (
+            models.Index(fields=["name"], name="netbox_dns_record_name"),
+            models.Index(fields=["fqdn"], name="netbox_dns_record_fqdn"),
+            models.Index(fields=["type"], name="netbox_dns_record_type"),
+            models.Index(fields=["ip_address"], name="netbox_dns_record_ip_address"),
+        )
+
     objects = RecordManager()
     raw_objects = RestrictedQuerySet.as_manager()
 
