@@ -36,7 +36,7 @@ REDIS = {
 }
 
 RQ = {
-    'COMMIT_MODE': 'auto',
+    "COMMIT_MODE": "auto",
 }
 
 SECRET_KEY = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
