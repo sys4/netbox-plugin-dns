@@ -91,7 +91,7 @@ class Zone(ObjectModificationMixin, ContactsMixin, PrimaryModel):
             "name",
         )
 
-        constraints = [
+        constraints = (
             UniqueConstraint(
                 Lower("name"),
                 "view",
@@ -100,7 +100,15 @@ class Zone(ObjectModificationMixin, ContactsMixin, PrimaryModel):
                     "There is already a zone with the same name in this view"
                 ),
             ),
-        ]
+        )
+
+        indexes = (
+            models.Index(fields=["name"], name="netbox_dns_zone_name"),
+            models.Index(
+                fields=["rfc2317_prefix"], name="netbox_dns_zone_rfc2317_prefix"
+            ),
+            models.Index(fields=["arpa_network"], name="netbox_dns_zone_arpa_network"),
+        )
 
     clone_fields = (
         "view",
