@@ -97,7 +97,8 @@ class ZoneTemplateUpdateMixin:
         try:
             with transaction.atomic():
                 if self.instance.id is not None:
-                    super()._post_clean()
+                    if hasattr(self, "_post_clean"):
+                        super()._post_clean()
                     zone = super().save(*args, **kwargs)
                 else:
                     zone_data = self.cleaned_data.copy()
