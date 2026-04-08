@@ -35,6 +35,10 @@ REDIS = {
     },
 }
 
+RQ = {
+    'COMMIT_MODE': 'auto',
+}
+
 SECRET_KEY = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 API_TOKEN_PEPPERS = {
     1: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
