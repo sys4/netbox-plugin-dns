@@ -59,16 +59,15 @@ jobs:
                 sed -i 's/exclude/#exclude/g' pyproject.toml
                 pip install .
 
-          - name: Install dependencies and set up configuration
+          - name: Install dependencies
             working-directory: netbox
             run: |
-                ln -s $(pwd)/../netbox-plugin-dns/media/configuration.testing.py netbox/netbox/configuration.py
-
                 python -m pip install --upgrade pip
                 python -m pip install tblib
                 pip install -r requirements.txt -U
 
           - name: Run tests
             working-directory: netbox
-            run: |
+            run: >
+                NETBOX_CONFIGURATION=netbox_dns.tests.configuration
                 python netbox/manage.py test netbox_dns.tests --parallel -v2
