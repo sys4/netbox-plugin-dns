@@ -110,6 +110,10 @@ class RecordForm(TenancyForm, PrimaryModelForm):
         required=True,
         label=_("Type"),
     )
+    ttl = TimePeriodField(
+        required=False,
+        label=_("TTL"),
+    )
 
 
 class RecordFilterForm(TenancyFilterForm, PrimaryModelFilterSetForm):
