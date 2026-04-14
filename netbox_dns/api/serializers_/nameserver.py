@@ -46,7 +46,6 @@ class NameServerSerializer(PrimaryModelSerializer):
         many=True,
         read_only=True,
         required=False,
-        default=None,
         help_text=_("Zones served by the authoritative nameserver"),
     )
     tenant = TenantSerializer(

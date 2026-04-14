@@ -73,7 +73,6 @@ class DNSSECPolicySerializer(PrimaryModelSerializer):
         many=True,
         read_only=False,
         required=False,
-        default=None,
         help_text=_("Key templates assigned to the policy"),
     )
     dnskey_ttl = TimePeriodField(
@@ -128,14 +127,12 @@ class DNSSECPolicySerializer(PrimaryModelSerializer):
         many=True,
         read_only=True,
         required=False,
-        default=None,
         help_text=_("Zones this policy is assigned to"),
     )
     zone_templates = NestedZoneTemplateSerializer(
         many=True,
         read_only=True,
         required=False,
-        default=None,
         help_text=_("Zone templates this policy is assigned to"),
     )
     tenant = TenantSerializer(
