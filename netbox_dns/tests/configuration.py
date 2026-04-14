@@ -23,14 +23,14 @@ REDIS = {
         "HOST": "localhost",
         "PORT": 6379,
         "PASSWORD": "",
-        "DATABASE": 0,
+        "DATABASE": 2,
         "SSL": False,
     },
     "caching": {
         "HOST": "localhost",
         "PORT": 6379,
         "PASSWORD": "",
-        "DATABASE": 1,
+        "DATABASE": 3,
         "SSL": False,
     },
 }
