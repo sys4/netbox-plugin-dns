@@ -59,7 +59,6 @@ class DNSSECKeyTemplateSerializer(PrimaryModelSerializer):
         many=True,
         read_only=True,
         required=False,
-        default=None,
         help_text=_("Policies using this Key Template"),
     )
     tenant = TenantSerializer(
