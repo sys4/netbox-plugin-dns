@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
             "netbox_dns",
             "0030_dnsseckeytemplate_comments_dnsseckeytemplate_owner_and_more",
         ),
-        ("tenancy", "0023_add_mptt_tree_indexes"),
+        ("tenancy", "0022_add_comments_to_organizationalmodel"),
         ("users", "0015_owner"),
     ]
 
