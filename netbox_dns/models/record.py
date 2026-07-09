@@ -16,6 +16,7 @@ from netbox.models import PrimaryModel
 from netbox.models.features import ContactsMixin
 from netbox.plugins.utils import get_plugin_config
 from netbox.search import SearchIndex, register_search
+from netbox_dns.branching import dns_branch_replay_active
 from netbox_dns.choices import (
     RecordClassChoices,
     RecordStatusChoices,
@@ -982,6 +983,13 @@ class Record(ObjectModificationMixin, ContactsMixin, PrimaryModel):
     clean_fields.alters_data = True
 
     def clean(self, *args, new_zone=None, **kwargs):
+        if dns_branch_replay_active():
+            # Replaying a NetBox Branching merge/sync/revert: the record was
+            # already validated in the branch, and re-running the uniqueness /
+            # zone-cut checks here (e.g. against the managed records the replay
+            # also carries) would spuriously fail. See netbox_dns.branching.
+            return
+
         self.validate_name(new_zone=new_zone)
         self.validate_value()
         self.check_unique_record(new_zone=new_zone)
@@ -1089,6 +1097,14 @@ class Record(ObjectModificationMixin, ContactsMixin, PrimaryModel):
         update_rrset_ttl=True,
         **kwargs,
     ):
+        if dns_branch_replay_active():
+            # Replaying a NetBox Branching merge/sync/revert: persist the row
+            # only. The PTR records and zone serial bumps this method would
+            # trigger are replayed from the branch changelog. See
+            # netbox_dns.branching.
+            super().save(*args, **kwargs)
+            return
+
         self.full_clean()
 
         if not self._state.adding and update_rrset_ttl:
@@ -1131,6 +1147,12 @@ class Record(ObjectModificationMixin, ContactsMixin, PrimaryModel):
                 self.zone.update_serial(save_zone_serial=save_zone_serial)
 
     def delete(self, *args, save_zone_serial=True, **kwargs):
+        if dns_branch_replay_active():
+            # See save(): PTR/serial reconciliation is replayed from the branch
+            # changelog, so drop the row only.
+            super().delete(*args, **kwargs)
+            return
+
         if self.rfc2317_cname_record:
             self.remove_from_rfc2317_cname_record(save_zone_serial=save_zone_serial)
 

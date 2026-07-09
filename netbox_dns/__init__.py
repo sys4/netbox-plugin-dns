@@ -7,9 +7,62 @@ from netbox.plugins.utils import get_plugin_config
 __version__ = "1.6-beta2"
 
 
+_branching_hooks_registered = False
+
+
 def _check_list(setting):
     if not isinstance(get_plugin_config("netbox_dns", setting), list):
         raise ImproperlyConfigured(f"{setting} must be a list")
+
+
+def _register_branching_hooks():
+    """
+    Register NetBox Branching integration hooks, if the plugin is installed.
+
+    No-op when netbox-branching is absent, so NetBox DNS keeps working without
+    it.  Idempotent: a module-level guard keeps repeated ``ready()`` invocations
+    from registering the resolver more than once.
+    """
+    global _branching_hooks_registered
+    if _branching_hooks_registered:
+        return
+
+    # All-or-nothing and graceful: if netbox-branching is absent or too old to
+    # expose the APIs this integration needs, register nothing rather than
+    # leave a half-wired integration (or break plugin startup).
+    try:
+        from netbox_branching.signals import (
+            post_merge,
+            post_revert,
+            post_sync,
+            pre_merge,
+            pre_revert,
+            pre_sync,
+        )
+        from netbox_branching.utilities import register_branching_resolver
+    except ImportError:
+        return
+
+    from netbox_dns.branching import (
+        _enter_replay,
+        _exit_replay,
+        supports_branching_resolver,
+    )
+
+    # Route the DNS m2m through models (and every other DNS model) to the
+    # active branch's schema.
+    register_branching_resolver(supports_branching_resolver)
+
+    # Suppress the DNS reconciliation side effects while a branch is being
+    # merged / synced / reverted, so the replayed changelog isn't duplicated by
+    # freshly-generated managed records.  ``weak=False`` keeps the receivers
+    # alive past the end of ``ready()``.
+    for signal in (pre_merge, pre_sync, pre_revert):
+        signal.connect(_enter_replay, weak=False)
+    for signal in (post_merge, post_sync, post_revert):
+        signal.connect(_exit_replay, weak=False)
+
+    _branching_hooks_registered = True
 
 
 class DNSConfig(PluginConfig):
@@ -121,6 +174,8 @@ class DNSConfig(PluginConfig):
 
     def ready(self):
         super().ready()
+
+        _register_branching_hooks()
 
         import netbox_dns.signals.dnssec  # noqa: F401
 

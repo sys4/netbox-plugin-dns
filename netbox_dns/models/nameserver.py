@@ -9,6 +9,7 @@ from netbox.models import PrimaryModel
 from netbox.models.features import ContactsMixin
 from netbox.plugins.utils import get_plugin_config
 from netbox.search import SearchIndex, register_search
+from netbox_dns.branching import dns_branch_replay_active
 from netbox_dns.choices import RecordTypeChoices
 from netbox_dns.mixins import ObjectModificationMixin
 from netbox_dns.utilities import (
@@ -72,6 +73,10 @@ class NameServer(ObjectModificationMixin, ContactsMixin, PrimaryModel):
         return name_to_unicode(self.name)
 
     def clean_fields(self, exclude=None):
+        if dns_branch_replay_active():
+            super().clean_fields(exclude=exclude)
+            return
+
         if get_plugin_config("netbox_dns", "convert_names_to_lowercase", False):
             self.name = self.name.lower()
 
@@ -80,6 +85,12 @@ class NameServer(ObjectModificationMixin, ContactsMixin, PrimaryModel):
     clean_fields.alters_data = True
 
     def clean(self, *args, **kwargs):
+        if dns_branch_replay_active():
+            # See save(): the name is already normalised/validated in the
+            # branch; skip model-level validation during a merge/sync/revert
+            # replay.
+            return
+
         try:
             self.name = normalize_name(self.name)
         except NameFormatError as exc:
@@ -103,6 +114,13 @@ class NameServer(ObjectModificationMixin, ContactsMixin, PrimaryModel):
     clean.alters_data = True
 
     def save(self, *args, **kwargs):
+        if dns_branch_replay_active():
+            # Replaying a NetBox Branching merge/sync/revert: persist the row
+            # only. The dependent zones' SOA/NS record updates are replayed
+            # from the branch changelog. See netbox_dns.branching.
+            super().save(*args, **kwargs)
+            return
+
         self.full_clean()
 
         changed_fields = self.changed_fields
@@ -120,6 +138,12 @@ class NameServer(ObjectModificationMixin, ContactsMixin, PrimaryModel):
                     zone.update_ns_records()
 
     def delete(self, *args, **kwargs):
+        if dns_branch_replay_active():
+            # See save(): the managed NS record cleanup is replayed from the
+            # branch changelog, so drop the row only.
+            super().delete(*args, **kwargs)
+            return
+
         with transaction.atomic():
             for zone in self.zones.all():
                 zone.records.filter(
