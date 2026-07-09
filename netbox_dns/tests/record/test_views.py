@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django.test import override_settings
 from django.urls import reverse
@@ -114,7 +114,11 @@ class RecordViewTestCase(
             "ttl": 86420,
             "disable_ptr": False,
             "description": "New Description",
-            "expiration_date": date(2026, 6, 30),
+            # Must be in the future: a past expiration date would flip the
+            # record's status to "expired" on save (see Record.is_expired),
+            # breaking the status assertion below. Kept relative to today so
+            # the test doesn't rot as the calendar advances.
+            "expiration_date": date.today() + timedelta(days=365),
         }
 
         cls.csv_data = (

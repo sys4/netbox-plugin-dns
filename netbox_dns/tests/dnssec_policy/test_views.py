@@ -167,7 +167,7 @@ class DNSSECPolicyViewTestCase(
         cls.csv_update_data = (
             "id,description,use_nsec3,create_cdnskey,inline_signing",
             f"{cls.dnssec_policies[0].pk},Test Description 1,true,true,true",
-            f"{cls.dnssec_policies[1].pk},Test Description 2,false,false,trie",
+            f"{cls.dnssec_policies[1].pk},Test Description 2,false,false,true",
         )
 
     maxDiff = None
