@@ -25,6 +25,7 @@ from netbox.models import PrimaryModel
 from netbox.models.features import ContactsMixin
 from netbox.plugins.utils import get_plugin_config
 from netbox.search import SearchIndex, register_search
+from netbox_dns.branching import dns_branch_replay_active
 from netbox_dns.choices import (
     RecordClassChoices,
     RecordTypeChoices,
@@ -776,6 +777,14 @@ class Zone(ObjectModificationMixin, ContactsMixin, PrimaryModel):
             ptr_zone.update_soa_record()
 
     def clean_fields(self, exclude=None):
+        if dns_branch_replay_active():
+            # During a NetBox Branching replay the field values already come
+            # from the validated branch changelog; skip the DNS-specific
+            # defaulting (default view, SOA defaults, name normalization) and
+            # run only Django's built-in field validation. See netbox_dns.branching.
+            super().clean_fields(exclude=exclude)
+            return
+
         defaults = settings.PLUGINS_CONFIG.get("netbox_dns")
 
         if get_plugin_config("netbox_dns", "convert_names_to_lowercase", False):
@@ -815,6 +824,15 @@ class Zone(ObjectModificationMixin, ContactsMixin, PrimaryModel):
     clean_fields.alters_data = True
 
     def clean(self, *args, **kwargs):
+        if dns_branch_replay_active():
+            # See clean_fields(): the object is applied from the validated
+            # branch changelog, so skip model-level validation entirely while
+            # replaying a merge/sync/revert. (Running it would re-check DNS
+            # invariants against the managed records the replay also carries,
+            # and choke on the partial objects branching reconstructs when
+            # reverting an update.)
+            return
+
         if not self.dnssec_policy:
             self.parental_agents = self._meta.get_field("parental_agents").get_default()
 
@@ -971,6 +989,14 @@ class Zone(ObjectModificationMixin, ContactsMixin, PrimaryModel):
     clean.alters_data = True
 
     def save(self, *args, **kwargs):
+        if dns_branch_replay_active():
+            # A NetBox Branching merge/sync/revert is replaying recorded
+            # changes; persist the row only and let the changelog reproduce the
+            # managed SOA/NS records, PTR records and serial bumps this method
+            # would otherwise regenerate (and duplicate). See netbox_dns.branching.
+            super().save(*args, **kwargs)
+            return
+
         self.full_clean()
 
         changed_fields = self.changed_fields
@@ -1159,6 +1185,11 @@ class Zone(ObjectModificationMixin, ContactsMixin, PrimaryModel):
 
 @receiver(m2m_changed, sender=Zone.nameservers.through)
 def update_ns_records(**kwargs):
+    if dns_branch_replay_active():
+        # See Zone.save(): the managed NS records are replayed from the branch
+        # changelog, so don't regenerate them here.
+        return
+
     if kwargs.get("action") not in ["post_add", "post_remove"]:
         return
 
