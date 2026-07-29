@@ -695,7 +695,27 @@ class Zone(ObjectModificationMixin, ContactsMixin, PrimaryModel):
         if self.last_updated:
             soa_serial = ceil(max(soa_serial, self.last_updated.timestamp()))
 
-        return soa_serial
+        return self.format_auto_serial(soa_serial)
+
+    def format_auto_serial(self, timestamp):
+        if get_plugin_config("netbox_dns", "zone_soa_serial_format") == "date-counter":
+            date_serial = int(datetime.fromtimestamp(timestamp).strftime("%Y%m%d00"))
+            if self.soa_serial is not None and date_serial <= self.soa_serial < (
+                date_serial + 99
+            ):
+                return self.soa_serial + 1
+            if self.soa_serial == date_serial + 99:
+                raise ValidationError(
+                    {
+                        "soa_serial": _(
+                            "The daily limit of 100 automatic SOA serial numbers "
+                            "has been reached for zone {zone}."
+                        ).format(zone=self.name)
+                    }
+                )
+            return date_serial
+
+        return ceil(timestamp)
 
     def update_serial(self, save_zone_serial=True):
         if not self.soa_serial_auto:
@@ -703,7 +723,7 @@ class Zone(ObjectModificationMixin, ContactsMixin, PrimaryModel):
 
         self.snapshot()
         self.last_updated = datetime.now()
-        self.soa_serial = ceil(datetime.now().timestamp())
+        self.soa_serial = self.format_auto_serial(datetime.now().timestamp())
 
         if save_zone_serial:
             super().save(update_fields=["soa_serial", "last_updated"])

@@ -335,7 +335,21 @@ SOA SERIAL fields are crucial for the propagation of zone data from primary name
 
 This is particularly relevant when PTR records are automatically created from A and AAAA records and an update to a forward zone thus can result in one or several reverse zones being updated in the background as well.
 
-For that reason, NetBox DNS offers the option of automatically creating SOA serial numbers when zones or records within them change. This is controlled by the `Generate SOA Serial` checkbox in the zone create and edit views. If that check box is ticked, the serial number of the zone is calculated as maximum of the Unix epoch times (seconds since January 1st, 1970 00:00 UTC) of the last change to any records and the zone itself.
+For that reason, NetBox DNS offers the option of automatically creating SOA serial numbers when zones or records within them change. This is controlled by the `Generate SOA Serial` checkbox in the zone create and edit views. If that check box is ticked, the serial number defaults to the maximum of the Unix epoch times (seconds since January 1st, 1970 00:00 UTC) of the last change to any records and the zone itself.
+
+The plugin setting `zone_soa_serial_format` can be set to `date-counter` to
+generate serials in `YYYYMMDDnn` format instead. `nn` starts at `00` each day
+and is increased for every subsequent zone change on that day, allowing up to
+100 changes per zone and day. The default value is `unix`, which retains the
+existing behaviour.
+
+```python
+PLUGINS_CONFIG = {
+    "netbox_dns": {
+        "zone_soa_serial_format": "date-counter",
+    }
+}
+```
 
 If the checkbox is not selected, the SERIAL field is mandatory and the user is responsible for keeping track of zone changes. NetBox DNS will not touch the serial number of that zone in any case.
 

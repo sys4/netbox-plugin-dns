@@ -25,6 +25,7 @@ class DNSConfig(PluginConfig):
         "zone_default_ttl": 86400,
         "zone_soa_ttl": 86400,
         "zone_soa_serial": 1,
+        "zone_soa_serial_format": "unix",
         "zone_soa_refresh": 43200,
         "zone_soa_retry": 7200,
         "zone_soa_expire": 2419200,
@@ -140,6 +141,12 @@ class DNSConfig(PluginConfig):
             "custom_record_types",
         ):
             _check_list(setting)
+
+        soa_serial_format = get_plugin_config("netbox_dns", "zone_soa_serial_format")
+        if soa_serial_format not in ("unix", "date-counter"):
+            raise ImproperlyConfigured(
+                "zone_soa_serial_format must be 'unix' or 'date-counter'"
+            )
 
 
 #

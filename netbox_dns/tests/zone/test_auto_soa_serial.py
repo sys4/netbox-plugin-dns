@@ -91,6 +91,56 @@ class ZoneAutoSOASerialTestCase(TestCase):
 
         self.assertEqual(zone.soa_serial, 1)
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                **settings.PLUGINS_CONFIG["netbox_dns"],
+                "zone_soa_serial_format": "date-counter",
+            }
+        }
+    )
+    def test_date_counter_soa_serial(self):
+        zone = self.zones[0]
+        today = int(datetime.now().strftime("%Y%m%d00"))
+        zone.soa_serial = None
+
+        self.assertEqual(zone.format_auto_serial(datetime.now().timestamp()), today)
+
+        zone.soa_serial = today
+        self.assertEqual(zone.format_auto_serial(datetime.now().timestamp()), today + 1)
+
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                **settings.PLUGINS_CONFIG["netbox_dns"],
+                "zone_soa_serial_format": "date-counter",
+            }
+        }
+    )
+    def test_date_counter_soa_serial_new_day(self):
+        zone = self.zones[0]
+        zone.soa_serial = 2020010199
+
+        self.assertEqual(
+            zone.format_auto_serial(datetime.now().timestamp()),
+            int(datetime.now().strftime("%Y%m%d00")),
+        )
+
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {
+                **settings.PLUGINS_CONFIG["netbox_dns"],
+                "zone_soa_serial_format": "date-counter",
+            }
+        }
+    )
+    def test_date_counter_soa_serial_daily_limit(self):
+        zone = self.zones[0]
+        zone.soa_serial = int(datetime.now().strftime("%Y%m%d99"))
+
+        with self.assertRaises(ValidationError):
+            zone.format_auto_serial(datetime.now().timestamp())
+
     def test_increase_soa_serial(self):
         zone = self.zones[1]
 
