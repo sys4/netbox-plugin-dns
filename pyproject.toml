@@ -1,6 +1,6 @@
 [project]
 name = "netbox-plugin-dns"
-version = "1.5.11"
+version = "1.6-beta2"
 description = "NetBox DNS is a NetBox plugin for managing DNS data."
 authors = [
     {name="Peter Eckel", email="pe@sys4.de"},
@@ -11,7 +11,7 @@ license-files = [
 readme = "README.md"
 keywords = ["netbox", "netbox-plugin", "dns"]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 4 - Beta",
     "Framework :: Django",
     "Natural Language :: English",
     "Programming Language :: Python",
