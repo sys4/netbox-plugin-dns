@@ -4,10 +4,10 @@ from ipam.models import Prefix
 from netbox_dns.filtersets import ViewFilterSet
 from netbox_dns.models import View
 from tenancy.models import Tenant, TenantGroup
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 
 
-class ViewFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class ViewFilterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = View.objects.all()
     filterset = ViewFilterSet
     ignore_fields = ("ip_address_filter",)

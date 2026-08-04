@@ -11,10 +11,10 @@ from netbox_dns.models import (
     Zone,
 )
 from tenancy.models import Tenant, TenantGroup
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 
 
-class ZoneFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class ZoneFilterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = Zone.objects.all()
     filterset = ZoneFilterSet
 

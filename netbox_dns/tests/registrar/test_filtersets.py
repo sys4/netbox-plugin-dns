@@ -2,10 +2,10 @@ from django.test import TestCase
 
 from netbox_dns.filtersets import RegistrarFilterSet
 from netbox_dns.models import Registrar
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 
 
-class RegistrarFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class RegistrarFilterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = Registrar.objects.all()
     filterset = RegistrarFilterSet
 

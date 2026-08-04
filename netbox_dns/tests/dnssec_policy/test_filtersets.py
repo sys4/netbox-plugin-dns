@@ -15,10 +15,10 @@ from netbox_dns.models import (
     Zone,
     ZoneTemplate,
 )
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 
 
-class DNSSECPolicyFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class DNSSECPolicyFilterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = DNSSECPolicy.objects.all()
     filterset = DNSSECPolicyFilterSet
 

@@ -2,10 +2,10 @@ from django.test import TestCase
 
 from netbox_dns.filtersets import RegistrationContactFilterSet
 from netbox_dns.models import RegistrationContact
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 
 
-class RegistrationContactFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class RegistrationContactFilterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = RegistrationContact.objects.all()
     filterset = RegistrationContactFilterSet
 

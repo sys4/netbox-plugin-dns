@@ -4,10 +4,10 @@ from netbox_dns.choices import RecordStatusChoices, RecordTypeChoices, ZoneStatu
 from netbox_dns.filtersets import RecordFilterSet
 from netbox_dns.models import NameServer, Record, Zone
 from tenancy.models import Tenant, TenantGroup
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 
 
-class RecordFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class RecordFilterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = Record.objects.exclude(type=RecordTypeChoices.SOA)
     filterset = RecordFilterSet
 

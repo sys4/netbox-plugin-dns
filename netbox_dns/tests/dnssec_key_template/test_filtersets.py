@@ -7,10 +7,10 @@ from netbox_dns.choices import (
 )
 from netbox_dns.filtersets import DNSSECKeyTemplateFilterSet
 from netbox_dns.models import DNSSECKeyTemplate, DNSSECPolicy
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 
 
-class DNSSECKeyTemplateFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class DNSSECKeyTemplateFilterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = DNSSECKeyTemplate.objects.all()
     filterset = DNSSECKeyTemplateFilterSet
 

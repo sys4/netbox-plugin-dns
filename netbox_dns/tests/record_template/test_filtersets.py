@@ -4,10 +4,10 @@ from netbox_dns.choices import RecordStatusChoices, RecordTypeChoices
 from netbox_dns.filtersets import RecordTemplateFilterSet
 from netbox_dns.models import RecordTemplate, ZoneTemplate
 from tenancy.models import Tenant, TenantGroup
-from utilities.testing import ChangeLoggedFilterSetTests
+from utilities.testing import ChangeLoggedFilterSetTestMixin
 
 
-class RecordTemplateFilterSetTestCase(TestCase, ChangeLoggedFilterSetTests):
+class RecordTemplateFilterSetTestCase(TestCase, ChangeLoggedFilterSetTestMixin):
     queryset = RecordTemplate.objects.all()
     filterset = RecordTemplateFilterSet
 
