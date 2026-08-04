@@ -4,6 +4,7 @@ from django.db.models.functions import Length
 from django.utils.translation import gettext_lazy as _
 from dns import name as dns_name
 
+from netbox.object_actions import BulkExport
 from netbox.views import generic
 from netbox_dns.choices import RecordTypeChoices, ZoneStatusChoices
 from netbox_dns.filtersets import RecordFilterSet
@@ -56,7 +57,7 @@ class ManagedRecordListView(generic.ObjectListView):
     filterset = RecordFilterSet
     filterset_form = RecordFilterForm
     table = ManagedRecordTable
-    actions = {"export": {"view"}}
+    actions = [BulkExport]
     template_name = "netbox_dns/record/managed.html"
 
 
