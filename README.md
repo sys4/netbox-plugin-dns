@@ -17,9 +17,8 @@ The NetBox DNS plugin enables NetBox to manage operational DNS data such as name
 </div>
 
 > [!WARNING]
-> **As a result of some issues with NetBox Branching still under investigation, NetBox DNS is currently not compatible with the new NetBox Branching plugin.**
-> This affects multiple aspects of the branching functionality, and currently there is no workaround. Do not try to use NetBox Branching together with NetBox DNS until these issues are resolved.
-> This warning will be updated as soon as the situation is resolved.
+> ** This is a beta release including support for the NetBox Branching plugin. Please test it with Branching, but don't use it in production and make sure you have a backup available. **
+> ** Really. Do have a backup! **
 
 ## Objectives
 NetBox DNS is designed to be the 'DNS Source of Truth' analogous to NetBox being the 'Network Source of Truth'.
@@ -37,6 +36,7 @@ The main focus of the plugin is to ensure the quality of the data stored in it. 
 * Templating for zones and records enables faster creations of zones with given boilerplate object relations, such as name servers, tags, tenants or registration information, or records like standard SPF or MX records that are the same for a subset of zones
 * IPAM DNSsync can be used to automatically create address and pointer records for IP addresses by assigning prefixes to DNS views. When an IP address has a DNS name assigned and there are zones with matching names in the DNS views linked to the IP address' prefix, a matching DNS record will be created in these zones
 * DNSSEC support for storing configuration data relevant to DNSSEC operation in NetBox DNS
+* Beta support for the NetBox Branching plugin by contribution from @arthanson
 
 Other main features include:
 
