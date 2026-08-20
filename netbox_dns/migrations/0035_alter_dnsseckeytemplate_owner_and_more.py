@@ -5,61 +5,120 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('netbox_dns', '0034_record_external_rfc2317_zone'),
-        ('users', '0016_default_ordering_indexes'),
+        ("netbox_dns", "0034_record_external_rfc2317_zone"),
+        ("users", "0016_default_ordering_indexes"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='dnsseckeytemplate',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="dnsseckeytemplate",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='dnssecpolicy',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="dnssecpolicy",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='nameserver',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="nameserver",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='record',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="record",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='recordtemplate',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="recordtemplate",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='registrar',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="registrar",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='registrationcontact',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="registrationcontact",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='view',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="view",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='zone',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="zone",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
         migrations.AlterField(
-            model_name='zonetemplate',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='users.owner'),
+            model_name="zonetemplate",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="+",
+                to="users.owner",
+            ),
         ),
     ]

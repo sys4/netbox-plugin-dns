@@ -1,6 +1,7 @@
+from unittest import skip
+
 from django.urls import reverse
 from rest_framework import status
-from unittest import skip
 
 from netbox_dns.choices import RecordTypeChoices
 from netbox_dns.models import NameServer, Record, View, Zone
