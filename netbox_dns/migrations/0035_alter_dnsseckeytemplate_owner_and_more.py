@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('netbox_dns', '0032_record_expiration_date'),
+        ('netbox_dns', '0034_record_external_rfc2317_zone'),
         ('users', '0016_default_ordering_indexes'),
     ]
 
