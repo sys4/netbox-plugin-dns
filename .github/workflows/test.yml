@@ -50,7 +50,7 @@ jobs:
             with:
                 repository: "netbox-community/netbox"
                 path: netbox
-                ref: main
+                ref: v4.6.10
 
           - name: Install NetBox DNS
             working-directory: netbox-plugin-dns
