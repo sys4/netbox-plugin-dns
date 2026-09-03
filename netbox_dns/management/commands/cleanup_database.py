@@ -1,8 +1,11 @@
 from django.core.management.base import BaseCommand
 from netaddr import IPAddress
 
+from netbox.plugins.utils import get_plugin_config
 from netbox_dns.choices import RecordTypeChoices
 from netbox_dns.models import Record, Zone
+
+ZONE_ACTIVE_STATUS_LIST = get_plugin_config("netbox_dns", "zone_active_status")
 
 
 class Command(BaseCommand):
@@ -17,6 +20,7 @@ class Command(BaseCommand):
         self._record_update_ip_address(**options)
         self._record_remove_orphaned_ptr_records(**options)
         self._record_remove_orphaned_address_records(**options)
+        self._record_remove_ptr_records_from_inactive_zones(**options)
 
         if options.get("verbosity"):
             self.stdout.write("Database cleanup completed.")
@@ -201,4 +205,16 @@ class Command(BaseCommand):
         for record in orphaned_address_records:
             if options.get("verbosity") > 1:
                 self.stdout.write(f"Removing orphaned address record '{record}'")
+            record.delete()
+
+    def _record_remove_ptr_records_from_inactive_zones(self, **options):
+        if options.get("verbosity"):
+            self.stdout.write("Removing managed PTR records from inactive zones")
+
+        for record in Record.objects.exclude(
+            zone__status__in=ZONE_ACTIVE_STATUS_LIST,
+        ).filter(
+            type=RecordTypeChoices.PTR,
+            managed=True,
+        ):
             record.delete()
