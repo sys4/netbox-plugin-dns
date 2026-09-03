@@ -177,7 +177,7 @@ msgstr "Inactif"
 
 #: choices/record.py:101
 msgid "Expired"
-msgstr ""
+msgstr "Expiré"
 
 #: choices/zone.py:23
 msgid "Reserved"
@@ -197,7 +197,7 @@ msgstr "Dynamique"
 
 #: choices/zone.py:27
 msgid "External"
-msgstr ""
+msgstr "Externe"
 
 #: fields/address.py:13
 msgid "IPv4/v6 address"
@@ -628,11 +628,11 @@ msgstr "Valeur"
 
 #: forms/record.py:195
 msgid "Expiration Date Before"
-msgstr ""
+msgstr "Expire avant le"
 
 #: forms/record.py:200
 msgid "Expiration Date After"
-msgstr ""
+msgstr "Expire après le"
 
 #: forms/record.py:279
 #, python-format
@@ -1208,7 +1208,7 @@ msgstr "Enregistrement CNAME RCF2317"
 
 #: models/record.py:266
 msgid "External RFC2317 Zone"
-msgstr ""
+msgstr "Zone RFC2317 externe"
 
 #: models/record.py:430
 #, python-brace-format
@@ -1344,7 +1344,7 @@ msgstr "soa_serial pour la zone {zone} ne peut pas plus petit"
 #: models/zone.py:802
 #, python-brace-format
 msgid "There are existing active records in zone {zone} that would collide with one or more of the static CNAME records for this zone."
-msgstr ""
+msgstr "Il existe des enregistrements actifs dans la zone {zone} qui entrent en conflit avec un ou plusieurs enregistrements CNAME statiques pour cette zone."
 
 #: models/zone.py:908
 #, python-brace-format
@@ -1619,11 +1619,11 @@ msgstr "TTL minimum"
 
 #: templates/netbox_dns/zone.html:190
 msgid "Related Zone"
-msgstr ""
+msgstr "Zone liée"
 
 #: templates/netbox_dns/zone.html:192
 msgid "Related Zones"
-msgstr ""
+msgstr "Zones Liées"
 
 #: templates/netbox_dns/zone/base.html:12
 msgid "Add Record"
@@ -1647,7 +1647,7 @@ msgstr "Erreur"
 
 #: templates/netbox_dns/zone/rfc2317_cname_records.html:11
 msgid "CNAME Records"
-msgstr ""
+msgstr "Enregistrements CNAME"
 
 #: validators/dns_name.py:60
 #, python-brace-format
@@ -1671,7 +1671,7 @@ msgstr "{name} n'est pas un nom de domaine valide"
 
 #: validators/dns_value.py:29
 msgid "{name} is not a valid IDN: {error}."
-msgstr ""
+msgstr "{name} n'est pas un IDN valide : {error}."
 
 #: validators/dns_value.py:61
 #, python-brace-format
@@ -1769,4 +1769,4 @@ msgstr "Zones enfant"
 
 #: views/zone.py:275
 msgid "RFC2317 CNAME Records"
-msgstr ""
+msgstr "Enregistrements CNAME RFC2317"
