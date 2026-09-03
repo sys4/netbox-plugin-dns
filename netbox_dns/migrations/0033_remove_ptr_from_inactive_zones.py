@@ -12,6 +12,7 @@ def remove_ptr_from_inactive_zones(apps, schema_editor):
     inactive_ptr_records = Record.objects.filter(
         type=RecordTypeChoices.PTR,
         managed=True,
+    ).exclude(
         zone__status__in=ZONE_ACTIVE_STATUS_LIST,
     )
 

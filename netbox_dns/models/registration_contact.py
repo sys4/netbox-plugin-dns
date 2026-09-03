@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from taggit.managers import TaggableManager
 
 from netbox.models import PrimaryModel
 from netbox.search import SearchIndex, register_search
@@ -112,17 +111,6 @@ class RegistrationContact(PrimaryModel):
     email = models.EmailField(
         verbose_name=_("Email"),
         blank=True,
-    )
-
-    # +
-    # TODO: Retained for backwards compatibility with older versions where
-    # 'RegistrationContact' was still ambiguously named 'Contact'.
-    #
-    # Removing it requires a data migration.
-    # -
-    tags = TaggableManager(
-        through="extras.TaggedItem",
-        related_name="netbox_dns_contact_set",
     )
 
     @property
