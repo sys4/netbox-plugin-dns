@@ -9,11 +9,11 @@ ZONE_ACTIVE_STATUS_LIST = get_plugin_config("netbox_dns", "zone_active_status")
 def remove_ptr_from_inactive_zones(apps, schema_editor):
     Record = apps.get_model("netbox_dns", "Record")
 
-    inactive_ptr_records = Record.objects.filter(
+    inactive_ptr_records = Record.objects.exclude(
+        zone__status__in=ZONE_ACTIVE_STATUS_LIST,
+    ).filter(
         type=RecordTypeChoices.PTR,
         managed=True,
-    ).exclude(
-        zone__status__in=ZONE_ACTIVE_STATUS_LIST,
     )
 
     for record in inactive_ptr_records:
