@@ -97,7 +97,7 @@ class NameServerZoneListView(generic.ObjectChildrenView):
     )
 
     def get_children(self, request, parent):
-        return parent.zones
+        return parent.zones.restrict(request.user, "view")
 
 
 @register_model_view(NameServer, "soa_zones")
@@ -117,4 +117,4 @@ class NameServerSOAZoneListView(generic.ObjectChildrenView):
     )
 
     def get_children(self, request, parent):
-        return parent.soa_zones
+        return parent.soa_zones.restrict(request.user, "view")

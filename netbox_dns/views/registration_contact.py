@@ -95,4 +95,4 @@ class RegistrationContactZoneListView(generic.ObjectChildrenView):
             | Q(admin_c=parent)
             | Q(tech_c=parent)
             | Q(billing_c=parent)
-        )
+        ).restrict(request.user, "view")
