@@ -108,4 +108,4 @@ class ViewZoneListView(generic.ObjectChildrenView):
     )
 
     def get_children(self, request, parent):
-        return parent.zones
+        return parent.zones.restrict(request.user, "view")
