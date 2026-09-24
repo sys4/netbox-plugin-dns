@@ -167,6 +167,19 @@ class RecordValidationTestCase(TestCase):
             with self.assertRaises(ValidationError):
                 Record.objects.create(zone=zone, **record)
 
+    def test_canonicalization(self):
+        zone = self.zones[0]
+        uncanonicalized = {
+            "target.example.com.": {
+                "name": "test23",
+                "type": RecordTypeChoices.CNAME,
+                "value": "target.example.com.\nevil.example.org. 300 IN A 6.6.6.6",
+            },
+        }
+        for canonical, record in uncanonicalized.items():
+            r = Record.objects.create(zone=zone, **record)
+            self.assertEqual(canonical, r.value)
+
     def test_name_and_cname(self):
         zone = self.zones[0]
 

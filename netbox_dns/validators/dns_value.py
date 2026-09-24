@@ -83,6 +83,9 @@ def validate_record_value(record):
             ).format(value=record.value, type=record.type, error=exc)
         )
 
+    if record.type not in (RecordTypeChoices.TXT, RecordTypeChoices.SPF):
+        record.value = rr.to_text()
+
     skip_name_validation = record.type in get_plugin_config(
         "netbox_dns", "tolerate_non_rfc1035_types", default=[]
     )
