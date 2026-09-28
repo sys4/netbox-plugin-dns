@@ -110,3 +110,15 @@ class RecordSerializer(PrimaryModelSerializer):
 
     def get_expired(self, instance):
         return instance.is_expired
+
+    def validate(self, data):
+        if self.instance is not None and self.instance.managed:
+            raise serializers.ValidationError(
+                _("{object} is managed, refusing update").format(object=self.instance)
+            )
+        if isinstance(data, dict) and data.get("managed"):
+            raise serializers.ValidationError(
+                _("'managed' is True, refusing to create or update a managed record")
+            )
+
+        return super().validate(data)

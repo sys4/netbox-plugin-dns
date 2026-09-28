@@ -281,6 +281,45 @@ class RecordAPITestCase(
         response = self.client.delete(url, **self.header)
         self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
 
+    def test_bulk_update_managed_record(self):
+        record = Record.objects.create(
+            name="name1",
+            zone=self.zones[0],
+            type=RecordTypeChoices.A,
+            value="10.0.0.1",
+            managed=True,
+        )
+
+        url = reverse("plugins-api:netbox_dns-api:record-list")
+        self.add_permissions("netbox_dns.change_record")
+        data = [
+            {
+                "id": record.pk,
+                "ttl": 19200,
+            },
+        ]
+
+        response = self.client.patch(url, data, format="json", **self.header)
+        self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
+
+    def test_bulk_delete_managed_record(self):
+        record = Record.objects.create(
+            name="name1",
+            zone=self.zones[0],
+            type=RecordTypeChoices.A,
+            value="10.0.0.1",
+            managed=True,
+        )
+
+        url = reverse("plugins-api:netbox_dns-api:record-list")
+        self.add_permissions("netbox_dns.delete_record")
+        data = [
+            {"id": record.pk},
+        ]
+
+        response = self.client.delete(url, data, format="json", **self.header)
+        self.assertHttpStatus(response, status.HTTP_400_BAD_REQUEST)
+
     def test_record_expired(self):
         record = Record.objects.create(
             name="name1",
