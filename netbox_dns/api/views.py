@@ -1,5 +1,4 @@
 from django.utils.translation import gettext as _
-from rest_framework import serializers
 from rest_framework.routers import APIRootView
 
 from ipam.filtersets import PrefixFilterSet
@@ -42,6 +41,7 @@ from netbox_dns.models import (
     Zone,
     ZoneTemplate,
 )
+from utilities.exceptions import AbortRequest
 
 
 class NetBoxDNSRootView(APIRootView):
@@ -72,40 +72,13 @@ class RecordViewSet(NetBoxModelViewSet):
     serializer_class = RecordSerializer
     filterset_class = RecordFilterSet
 
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        if not isinstance(data, list):
-            data = [data]
-
-        if any(isinstance(record, dict) and record.get("managed") for record in data):
-            raise serializers.ValidationError(_("'managed' is True, refusing create"))
-
-        return super().create(request, *args, **kwargs)
-
-    def destroy(self, request, *args, **kwargs):
-        v_object = self.get_object()
-        if v_object.managed:
-            raise serializers.ValidationError(
-                _("{object} is managed, refusing deletion").format(object=v_object)
+    def perform_destroy(self, instance):
+        if instance.managed:
+            raise AbortRequest(
+                _("{object} is managed, refusing deletion").format(object=instance)
             )
 
-        return super().destroy(request, *args, **kwargs)
-
-    def update(self, request, *args, **kwargs):
-        v_object = self.get_object()
-        if v_object.managed:
-            raise serializers.ValidationError(
-                _("{object} is managed, refusing update").format(object=v_object)
-            )
-
-        if request.data.get("managed"):
-            raise serializers.ValidationError(
-                _("{object} is unmanaged, refusing update to managed").format(
-                    object=v_object
-                )
-            )
-
-        return super().update(request, *args, **kwargs)
+        super().perform_destroy(instance)
 
 
 class RegistrarViewSet(NetBoxModelViewSet):
