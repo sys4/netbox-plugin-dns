@@ -13,6 +13,7 @@ from netbox_dns.utilities import (
     get_ip_addresses_by_view,
     get_query_from_filter,
     update_dns_records,
+    validate_ip_address_filter,
 )
 from utilities.exceptions import AbortRequest
 
@@ -88,6 +89,13 @@ class View(ObjectModificationMixin, ContactsMixin, PrimaryModel):
                     )
                 }
             )
+
+        if "ip_address_filter" in changed_fields and self.ip_address_filter:
+            # Reject the filter before it is expanded into a query
+            try:
+                validate_ip_address_filter(self.ip_address_filter)
+            except ValidationError as exc:
+                raise ValidationError({"ip_address_filter": exc.messages})
 
         if "ip_address_filter" in changed_fields and self.get_saved_value(
             "ip_address_filter"

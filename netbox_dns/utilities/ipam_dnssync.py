@@ -2,7 +2,9 @@ import re
 from collections import defaultdict
 
 from django.conf import settings
+from django.core.exceptions import FieldDoesNotExist, ValidationError
 from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 from dns import name as dns_name
 from netaddr import IPNetwork
 
@@ -24,6 +26,7 @@ __all__ = (
     "get_ip_addresses_by_zone",
     "check_record_permission",
     "get_query_from_filter",
+    "validate_ip_address_filter",
     "check_filter",
     "get_cidr_address",
 )
@@ -349,7 +352,56 @@ def check_record_permission(add=True, change=True, delete=True):
     )
 
 
+RELATION_TERMINAL_LOOKUPS = frozenset({"pk", "id", "in", "isnull", "exact"})
+
+
+def _validate_filter_key(key):
+    parts = key.split("__")
+    for index, part in enumerate(parts):
+        try:
+            field = IPAddress._meta.get_field(part)
+        except FieldDoesNotExist:
+            if index == 0:
+                raise ValidationError(
+                    _("Unknown field {field} in filter key {key}").format(
+                        field=part, key=key
+                    )
+                )
+            return
+
+        if field.is_relation:
+            remainder = parts[index + 1 :]
+            if remainder and remainder[0] not in RELATION_TERMINAL_LOOKUPS:
+                raise ValidationError(
+                    _("Filter key {key} may not cross the relation {field}").format(
+                        key=key, field=part
+                    )
+                )
+            return
+
+        return
+
+
+def validate_ip_address_filter(ip_address_filter):
+    if not isinstance(ip_address_filter, list):
+        ip_address_filter = [ip_address_filter]
+
+    for condition in ip_address_filter:
+        if not condition:
+            continue
+        if not isinstance(condition, dict):
+            raise ValidationError(
+                _("Filter condition must be an object, not {type}").format(
+                    type=type(condition).__name__
+                )
+            )
+        for key in condition:
+            _validate_filter_key(key)
+
+
 def get_query_from_filter(ip_address_filter):
+    validate_ip_address_filter(ip_address_filter)
+
     query = Q()
 
     if not isinstance(ip_address_filter, list):
