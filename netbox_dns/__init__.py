@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from netbox.plugins import PluginConfig
 from netbox.plugins.utils import get_plugin_config
 
-__version__ = "1.7.2"
+__version__ = "1.7.3"
 
 
 _branching_hooks_registered = False
