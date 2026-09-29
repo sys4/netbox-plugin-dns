@@ -1,9 +1,11 @@
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 from ipam.api.serializers import PrefixSerializer
 from netbox.api.serializers import PrimaryModelSerializer
 from netbox_dns.models import View
+from netbox_dns.utilities import validate_ip_address_filter
 from tenancy.api.serializers import TenantSerializer
 
 __all__ = ("ViewSerializer",)
@@ -59,6 +61,13 @@ class ViewSerializer(PrimaryModelSerializer):
         required=False,
         allow_null=True,
     )
+
+    def validate_ip_address_filter(self, value):
+        try:
+            validate_ip_address_filter(value)
+        except DjangoValidationError as exc:
+            raise serializers.ValidationError(exc.messages)
+        return value
 
     def create(self, validated_data):
         prefixes = validated_data.pop("prefixes", None)
