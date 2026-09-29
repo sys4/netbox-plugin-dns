@@ -1,10 +1,10 @@
 from django import forms
 from django.conf import settings
-from django.core.exceptions import FieldError, ValidationError
+from django.core.exceptions import ValidationError
 from django.db.models import Count, Q
 from django.utils.translation import gettext_lazy as _
 
-from ipam.models import IPAddress, Prefix
+from ipam.models import Prefix
 from netbox.context import current_request
 from netbox.forms import (
     PrimaryModelBulkEditForm,
@@ -17,8 +17,8 @@ from netbox_dns.models import View
 from netbox_dns.utilities import (
     check_dns_records,
     get_ip_addresses_by_prefix,
-    get_query_from_filter,
     get_views_by_prefix,
+    validate_ip_address_filter,
 )
 from tenancy.forms import TenancyFilterForm, TenancyForm
 from tenancy.models import Tenant, TenantGroup
@@ -171,12 +171,9 @@ class ViewForm(ViewPrefixUpdateMixin, TenancyForm, PrimaryModelForm):
         ip_address_filter = self.cleaned_data.get("ip_address_filter")
 
         try:
-            IPAddress.objects.filter(get_query_from_filter(ip_address_filter)).exists()
-        except (FieldError, ValueError) as exc:
-            self.add_error(
-                "ip_address_filter",
-                _("Invalid filter for IPAddress: {error}").format(error=exc),
-            )
+            validate_ip_address_filter(ip_address_filter)
+        except ValidationError as exc:
+            self.add_error("ip_address_filter", exc)
 
         return ip_address_filter
 
