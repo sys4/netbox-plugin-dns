@@ -747,7 +747,7 @@ class RecordValidationTestCase(TestCase):
                 name="name7",
                 zone=f_zone,
                 type=RecordTypeChoices.NS,
-                value=r"[#^$[¨}!;--_?:.@/\ˇ´%].example.com.",
+                value=r"}!;--_?:.@/\ˇ´%].example.com.",
             ),
             Record(
                 name="name8",
@@ -759,13 +759,13 @@ class RecordValidationTestCase(TestCase):
                 name="name10",
                 zone=f_zone,
                 type=RecordTypeChoices.NSEC,
-                value=r"name11.[#^$[¨}!;--_?:.@/\ˇ´%].example.com.",
+                value=r"name11.}!;--_?:.@/\ˇ´%].example.com.",
             ),
             Record(
                 name="1",
                 zone=r_zone,
                 type=RecordTypeChoices.PTR,
-                value=r"name11.[#^$[¨}!;--_?:.@/\ˇ´%].com.",
+                value=r"name11.}!;--_?:.@/\ˇ´%].com.",
             ),
             Record(
                 name="name12",
@@ -777,7 +777,7 @@ class RecordValidationTestCase(TestCase):
                 name="name14",
                 zone=f_zone,
                 type=RecordTypeChoices.RT,
-                value=r"10 name99.[#^$[¨}!;--_?:.@/\ˇ´%].example.com.",
+                value=r"10 name99.}!;--_?:.@/\ˇ´%].example.com.",
             ),
             Record(
                 name="name15",
@@ -795,13 +795,13 @@ class RecordValidationTestCase(TestCase):
                 name="name17",
                 zone=f_zone,
                 type=RecordTypeChoices.SRV,
-                value=r"10 60 443 [#^$[¨}!;--_?:.@/\ˇ´%].zone1.example.com.",
+                value=r"10 60 443 }!;--_?:.@/\ˇ´%].zone1.example.com.",
             ),
             Record(
                 name="name18",
                 zone=f_zone,
                 type=RecordTypeChoices.SVCB,
-                value=r"1 svc.[#^$[¨}!;--_?:.@/\ˇ´%].com.",
+                value=r"1 svc.}!;--_?:.@/\ˇ´%].com.",
             ),
         )
 
