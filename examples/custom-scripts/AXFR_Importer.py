@@ -153,6 +153,7 @@ class AXFRImporter(Script):
         self.log_info(f"Creating zone {zone_name}")
         zone = Zone.objects.create(
             name=zone_name,
+            view=view,
             soa_mname=soa_mname,
             soa_rname=soa.rname.derelativize(origin),
             soa_refresh=soa.refresh,
