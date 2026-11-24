@@ -344,6 +344,13 @@ class Record(ObjectModificationMixin, ContactsMixin, PrimaryModel):
         return self.zone.records.filter(type=self.type, name=self.name)
 
     @property
+    def sibling_address_records(self):
+        return self.zone.records.filter(
+            type__in=[RecordTypeChoices.A, RecordTypeChoices.AAAA],
+            name=self.name,
+        ).exclude(type=self.type)
+
+    @property
     def rfc2317_ptr_name(self):
         return self.value.split(".")[-1]
 
