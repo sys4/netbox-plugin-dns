@@ -124,7 +124,7 @@ class RecordView(generic.ObjectView):
                 type=RecordTypeChoices.CNAME,
                 zone=parent_zone,
                 active=True,
-            )
+            ).select_related("zone")
             cname_records = cname_records.union(
                 {
                     record
