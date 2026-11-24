@@ -167,6 +167,18 @@
             </div>
         </div>
     {% endif %}
+    {% if sibling_address_record_table %}
+        <div class="card">
+            {% if sibling_address_record_table.rows|length == 1 %}
+                <h5 class="card-header">{% trans "Sibling Address Record" %}</h5>
+            {% else %}
+                <h5 class="card-header">{% trans "Sibling Address Records" %}</h5>
+            {% endif %}
+            <div class="table-responsive">
+                {% render_table sibling_address_record_table 'inc/table.html' %}
+            </div>
+        </div>
+    {% endif %}
     {% if cname_target_table %}
         <div class="card">
             {% if cname_target_table.rows|length == 1 %}

@@ -182,6 +182,14 @@ class RecordView(generic.ObjectView):
 
             context["rrset_record_table"] = rrset_record_table
 
+        if instance.sibling_address_records:
+            sibling_address_record_table = RelatedRecordTable(
+                data=instance.sibling_address_records
+            )
+            sibling_address_record_table.configure(request)
+
+            context["sibling_address_record_table"] = sibling_address_record_table
+
         if not instance.managed:
             try:
                 instance.check_zone_cut_conflict()
