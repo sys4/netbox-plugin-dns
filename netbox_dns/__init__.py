@@ -137,6 +137,7 @@ class DNSConfig(PluginConfig):
         "dnssync_disabled": False,
         "dnssync_ipaddress_active_status": ["active", "dhcp", "slaac"],
         "dnssync_conflict_deactivate": False,
+        "dnssync_zone_match_exact": False,
         "dnssync_minimum_zone_labels": 2,
         "tolerate_characters_in_zone_labels": "",
         "tolerate_underscores_in_labels": False,

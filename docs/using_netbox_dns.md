@@ -1348,6 +1348,23 @@ PLUGINS_CONFIG = {
 
 A setting of `1` allows names like `name.zone` to be created (provided there is a zone named `zone` in NetBox DNS. Please note that this is generally not a good idea. Setting the value to `0` would allow to create address records in the root zone, which is a *very bad* idea.
 
+### Limiting zone selection to exact parent zones
+By default, DNSsync tries to find any zone where the name can be creted. For example, if the zone `zone1.example.com` does not exist but the zone `example.com` does, a record named `name1.zone1` will be created if an IP address in an assigned prefix has `name1.zone1.example.com` set as its DNS name.
+
+If this is not desired, zone selection can be limited to genuine parent zones by setting the configuration variable `dnssync_zone_match_exact`:
+
+```
+PLUGINS_CONFIG = {
+    'netbox_dns': {
+        ...
+        'dnssync_zone_match_exact': True,
+        ...
+    },
+}
+```
+
+When this variable is set to `True` (default is `False`), only the zone `zone1.example.com` will be considered and no record will be generated in `example.com`.
+
 ### Rebuilding DNSsync relations
 In some cases it can happen that there are stale managed records or the connection between IP addresses and their related DNS records gets into an inconsistent state. This is also possible when moving from IPAM Coupling to IPAM DNSsync, where linked DNS address records may be left lying around despite not having a relation with an IP address via a Prefix to View assignment.
 
