@@ -122,6 +122,30 @@ class DNSsyncIPAddressTestCase(TestCase):
         record6 = Record.objects.get(ipam_ip_address=ipv6_address)
         self.assertEqual(record6.fqdn.rstrip("."), ipv6_address.dns_name)
 
+    @override_settings(
+        PLUGINS_CONFIG={
+            "netbox_dns": {**zone_defaults, "dnssync_zone_match_exact": True}
+        }
+    )
+    def test_create_ip_address_zone_match_exact(self):
+        zone1 = Zone.objects.create(name="example.com", **self.zone_data)
+        zone2 = Zone.objects.create(name="zone2.example.com", **self.zone_data)
+        IPAddress.objects.create(
+            address=IPNetwork("2001:db8::1/64"),
+            dns_name="name1.zone1.example.com",
+        )
+        IPAddress.objects.create(
+            address=IPNetwork("2001:db8::2/64"),
+            dns_name="name1.zone2.example.com",
+        )
+
+        self.assertFalse(
+            Record.objects.filter(zone=zone1, fqdn="name1.zone1.example.com.").exists()
+        )
+        self.assertTrue(
+            Record.objects.filter(zone=zone2, fqdn="name1.zone2.example.com.").exists()
+        )
+
     def test_create_ip_address_duplicate_record(self):
         records = (
             Record(

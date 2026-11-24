@@ -91,9 +91,16 @@ def get_zones(ip_address, view=None, old_zone=None):
     else:
         views = [view]
 
-    min_labels = settings.PLUGINS_CONFIG["netbox_dns"].get(
-        "dnssync_minimum_zone_labels", 2
+    zone_match_exact = settings.PLUGINS_CONFIG["netbox_dns"].get(
+        "dnssync_zone_match_exact", False
     )
+
+    if zone_match_exact:
+        min_labels = len(dns_name.from_text(ip_address.dns_name).labels) - 2
+    else:
+        min_labels = settings.PLUGINS_CONFIG["netbox_dns"].get(
+            "dnssync_minimum_zone_labels", 2
+        )
 
     zones = Zone.objects.filter(
         view__in=views,
